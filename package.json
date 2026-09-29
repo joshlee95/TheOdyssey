@@ -13,7 +13,8 @@
     "island:build": "node --env-file-if-exists=.env --import tsx scripts/build-island.ts",
     "test": "node --import tsx --test shared/*.test.ts server/*.test.ts",
     "typecheck": "tsc --noEmit",
-    "lint:prose": "tsx scripts/lint-prose.ts"
+    "lint:prose": "tsx scripts/lint-prose.ts",
+    "prepare": "git config core.hooksPath .githooks || true"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.110.0",

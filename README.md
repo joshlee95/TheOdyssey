@@ -50,3 +50,9 @@ npm run validate -- my-island                # 직접 고친 뒤 다시 검사
 ```
 
 `review.md`에 AI가 채워 넣은 부분과 확인이 필요한 질문이 정리됩니다. 섬 파일에는 비밀이 들어 있으니 다른 친구에게 보여 주지 마세요. 템플릿과 예시를 뺀 섬은 git에 올라가지 않습니다.
+
+## 보안 — API 키는 절대 올라가지 않게
+
+- API 키는 `data/settings.json`(⚙️ 설정) 또는 `.env`에만 두세요. 두 곳 모두 `.gitignore`로 제외돼 있어요.
+- `npm install`을 하면 커밋 전 검사 훅(`.githooks/pre-commit`)이 켜져서, 키처럼 생긴 문자열이나 비밀 파일이 들어간 커밋을 막습니다.
+- GitHub 쪽에도 시크릿 스캔과 푸시 차단이 켜져 있어요.
