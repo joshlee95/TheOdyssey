@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace-manifest.json",
+  "name": "koreanizer",
+  "owner": {
+    "name": "sangeuiseo",
+    "url": "https://github.com/sangeuiseo"
+  },
+  "description": "Install Koreanizer as a Claude plugin.",
+  "plugins": [
+    {
+      "name": "koreanizer",
+      "source": "./",
+      "description": "Rewrite AI-sounding Korean so it reads naturally without changing what it says.",
+      "license": "MIT",
+      "keywords": ["writing", "editing", "korean", "translationese", "humanize", "prose", "style"]
+    }
+  ]
+}

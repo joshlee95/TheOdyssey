@@ -1,0 +1,186 @@
+# 섬 팩 템플릿 — YAML을 직접 쓰고 싶은 사람용.
+# 보통은 draft.md를 쓰고 `npm run island:build -- <섬 id>`로 이 파일을 생성하면 됩니다.
+# 공개 범위: public 블록만 플레이어에게 보이고, 나머지는 AI GM과 작성자(섬지기)만 봅니다.
+# 검사: npm run validate -- <섬 id>   /   완성된 예시: islands/mist-lantern/island.yaml
+
+schema_version: 1
+id: my-island                     # 폴더 이름과 같게 (영문 소문자·숫자·하이픈)
+
+meta:
+  title: 이름 없는 섬
+  author: 작성자 닉네임
+  tagline: 한 줄 소개
+  tone: [모험]                     # 분위기 키워드 1~5개
+  players: { min: 2, max: 5 }
+  session_minutes: 90
+  content:
+    rating: teen                  # all | teen | mature — 이 섬이 담고 있는 최고 수위
+    lines: []                     # 절대 등장하지 않을 것
+    veils: []                     # 화면 밖에서만 암시할 것
+
+public:                           # ── 모든 플레이어 공개 ──
+  rumor: 선원들 사이에 도는 소문
+  first_sight: 수평선에서 처음 보이는 모습
+  arrival: 상륙 장면의 소재
+
+world:                            # ── 여기부터 GM·섬지기 전용 ──
+  reality:                        # 이 섬의 현실 규칙 (섬마다 세계가 다르다)
+    genre: [모험]                 # 예: [현대, 오피스, 블랙코미디]
+    era: 시대감
+    magic: rare                   # none | hidden | rare | common
+    technology: medieval          # primitive | medieval | industrial | modern | futuristic
+    speech: 주민들의 말투
+    outsiders: 주민들이 선원(외부인)을 어떻게 받아들이는가
+    crossover:                    # 다른 세계에서 가져온 것: works | weakened | transformed | fails
+      magic: works
+      tech: weakened
+      note: 예) 전자기기는 이 섬에서 나침반처럼만 작동한다
+    appearance: unchanged         # blend_in이면 상륙할 때 선원 겉모습이 이 세계에 맞게 바뀜
+  premise: 이 섬의 진짜 정체
+  laws:
+    - 이 섬만의 법칙이나 금기
+  start_location: landing
+  clock:                          # 위기 시계: 실패·지체할 때마다 한 칸씩 참
+    name: 위기가 다가온다
+    segments: 6
+
+story:                            # 서사의 뼈대
+  theme: 이 섬이 선원들에게 던지는 질문
+  hook: 선원들이 이 섬의 이야기에 휘말리는 계기
+  acts:                           # 3~5막
+    - name: 1막 이름
+      goal: 이 막에서 이루거나 알아내야 할 것
+      beats: [꼭 나올 장면 1, 꼭 나올 장면 2]
+      turn: 다음 막으로 넘어가는 전환점
+    - name: 2막 이름
+      goal: 목표
+      beats: [장면 1, 장면 2]
+      turn: 중반의 반전 — 선원들이 알던 것을 뒤집는 진실
+    - name: 3막 이름
+      goal: 목표
+      beats: [장면 1, 장면 2]
+      turn: 선원들의 선택이 결말을 정한다
+
+locations:
+  - id: landing
+    name: 상륙 지점
+    description: 어떤 곳인지
+    connects_to: [secret-place]   # 이어진 장소 id
+  - id: secret-place
+    name: 숨겨진 곳
+    description: 어떤 곳인지
+    connects_to: [landing]
+    hidden: true                  # 발견 전까지 숨김
+
+npcs:
+  - id: first-local
+    name: 첫 번째 주민
+    role: 역할
+    adult: true                   # 성인 여부 (성적 묘사는 성인 사이에서만)
+    look: 외모
+    personality: 성격 (중립 단계의 기본 행동)
+    voice: 말투
+    wants: 원하는 것
+    fears: 두려워하는 것
+    location: landing
+    alertness: normal             # dull | normal | sharp | uncanny — 속이기 난이도
+    affinity: 0                   # 선원들에 대한 초기 호감도 -100 ~ 100
+    likes: [호감이 오르는 행동]
+    dislikes: [호감이 떨어지는 행동]
+    behaviors:                    # 호감도 단계별 '행동'
+      hostile: 적대 — 방해하고 해친다
+      wary: 불신 — 경계하고 숨긴다
+      friendly: 호의 — 돕고 알려 준다
+      trusted: 신뢰 — 비밀을 털어놓는다
+      bonded: 유대 — 목숨을 건다
+    romance: false                # 유대 단계에서 연애로 발전 가능 (성인만)
+    relations:                    # 다른 NPC와의 관계 — 소문이 이 선을 따라 번진다
+      - { npc: second-local, affinity: 50, note: 오랜 친구 }
+    knows:                        # 아는 비밀과, 털어놓는 호감도 단계
+      - { secret: island-truth, share_at: trusted }
+    sample_lines:
+      - 대표 대사
+  - id: second-local
+    name: 두 번째 주민
+    role: 역할
+    adult: true
+    look: 외모
+    personality: 성격
+    voice: 말투
+    wants: 원하는 것
+    fears: 두려워하는 것
+    location: secret-place
+    likes: [호감이 오르는 행동]
+    dislikes: [호감이 떨어지는 행동]
+    behaviors:
+      hostile: 적대
+      wary: 불신
+      friendly: 호의
+      trusted: 신뢰
+      bonded: 유대
+    relations:
+      - { npc: first-local, affinity: 30, note: 은혜를 입었다 }
+    knows:
+      - { secret: island-truth, share_at: friendly }
+
+secrets:
+  - id: island-truth
+    truth: 밝혀질 진실
+    hints:
+      - 플레이어가 얻을 수 있는 단서
+    reveal_when: 언제 밝혀져도 되는지 (자연어)
+
+events:
+  - id: first-scene
+    kind: arrival                 # arrival | location | clock | random | finale
+    when: 상륙 직후
+    scene: 벌어지는 장면
+  - id: climax
+    kind: finale
+    clock: 6                      # clock/finale은 발동 칸 필수
+    when: 위기 시계가 가득 찼을 때
+    scene: 클라이맥스 장면
+    stakes: 걸려 있는 것
+
+trials:                           # 고난 — 여러 막에 나눠 배치
+  - id: first-trial
+    name: 첫 번째 고난
+    act: 1
+    description: 어떤 시련인가
+    test: 어떻게 넘는가 (판정, 선택, 희생)
+    on_success: 성공하면
+    on_fail: 실패하면 — 대가를 치르고 이야기는 계속된다
+  - id: second-trial
+    name: 두 번째 고난
+    act: 3
+    description: 어떤 시련인가
+    test: 어떻게 넘는가
+    on_success: 성공하면
+    on_fail: 실패하면
+
+blessings:                        # 축복 — 몸이나 운명에 깃드는 은혜
+  - id: island-blessing
+    name: 섬의 축복
+    description: 어떤 은혜인가
+    condition: 어떻게 얻는가
+    effect: 규칙상 효과 (예. 특정 판정에 이점, 영감 +1)
+    lasts: campaign               # island | campaign
+
+exits:
+  - id: set-sail
+    name: 무사히 출항
+    condition: 섬을 떠날 수 있는 조건
+    epilogue: 떠난 뒤의 에필로그
+    grants: [island-relic]        # 얻는 유물 id
+
+treasures:                        # 다른 섬에서도 쓸 수 있는 유물
+  - id: island-relic
+    name: 섬의 유물
+    description: 생김새
+    kind: anomaly                 # mundane | tech | magic | anomaly
+    power: 다음 섬에서 한 번, 어떤 세계에서든 통하는 효과
+
+gm_notes:
+  pacing: 진행 템포에 대한 부탁
+  do: []
+  dont: []

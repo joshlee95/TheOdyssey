@@ -1,0 +1,27 @@
+node_modules/
+.env
+
+# 친구들의 섬에는 비밀이 들어 있으므로 저장소에 올리지 않는다 (서버 업로드로 공유).
+# 템플릿과 테스트용 섬만 추적한다.
+islands/*
+!islands/_template/
+!islands/mist-lantern/
+!islands/overtime-tower/
+!islands/neon-harbor/
+!islands/dustwind-gulch/
+!islands/flesh-abbey/
+!islands/moonlit-palace/
+!islands/rust-ark/
+!islands/candy-republic/
+!islands/rain-city/
+!islands/cloud-sword-peak/
+islands/**/island.prev.yaml
+islands/**/review.md
+
+# 서버 설정 (API 키)
+data/
+
+# 로컬 전용
+.DS_Store
+.claude/launch.json
+.claude/settings.local.json

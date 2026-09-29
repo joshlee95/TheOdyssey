@@ -1,0 +1,196 @@
+# Prose Smells
+
+Recurring rhetorical patterns that work individually but accumulate into tics when overused. Unlike crutch words (single words used too often), prose smells are *structural patterns* — ways of constructing meaning that become predictable through repetition.
+
+These are not errors. Each pattern has legitimate uses. The problem is frequency: when the reader recognises the device before it lands, it stops working.
+
+## How to Use This File
+
+**For reviewers and editors:** When you encounter a prose smell, check how many times it appears in the manuscript. A few instances across a novel is fine. Clusters in a single chapter, or the same construction appearing every 2-3 chapters, is a problem.
+
+**For writers:** These are patterns to be *aware of*, not to eliminate. The goal is variety — if you reach for the same construction twice in a chapter, find a different way to say the second one.
+
+## Smell Catalogue
+
+### 1. The Paradoxical Pairing
+
+**Pattern:** "X and nothing / everything and Y" — two contradictory abstractions yoked together.
+
+**Examples:**
+- "meant nothing and everything"
+- "Everything had changed. Nothing had changed."
+- "saw everything and revealed nothing"
+- "might mean everything or nothing"
+- "was nothing and everything at the same time"
+
+**Why it works (once):** Creates genuine ambiguity. Forces the reader to hold two truths at once. Mirrors the disorientation of experience that resists simple summary.
+
+**Why it stops working:** The construction *itself* becomes the meaning. The reader starts hearing the formula instead of the paradox. It becomes shorthand for "this is complicated" rather than showing *how* it's complicated.
+
+**Threshold:** 3-4 instances per novel, no more than 1 per chapter. The pattern should be reserved for moments of genuine thematic weight — not applied to quotidian scenes where a more specific observation would serve better.
+
+**Fix:** Ask what the thing *actually* means, specifically, in this scene. "Quotas that meant nothing and everything" is vague. "Quotas that decided which factories kept running and which armies kept moving" is concrete. The paradox is still there — the reader sees it without being told.
+
+### 2. The Vague Particular
+
+**Pattern:** Using "particular" as an intensifier where a specific detail would be stronger.
+
+**Examples:**
+- "the particular quality of the light"
+- "a particular kind of silence"
+- "the particular way she held her cup"
+
+**Why it works (once):** Signals that the narrator notices something distinctive, specific, hard to name. Creates intimacy — the character perceives a nuance that resists easy description.
+
+**Why it stops working:** "Particular" promises specificity but delivers vagueness. It's an IOU for a detail the prose never provides. When used repeatedly, it becomes a tell that the writer is gesturing at atmosphere instead of creating it.
+
+**Threshold:** 2-3 per novel. Most uses can be replaced by the actual detail, or cut entirely.
+
+**Fix:** Replace with the detail itself. Instead of "the particular Scandinavian grey-gold," describe the light. Instead of "a particular kind of silence," say what made this silence different from other silences.
+
+### 3. The Exhaustive Triad
+
+**Pattern:** Three-item lists used as emotional punctuation at scene transitions and moments of reflection.
+
+**Examples:**
+- "She thought about X. About Y. About Z."
+- "The city. The light. The silence."
+- "Not the mother who X, not the mother who Y, but the other mother."
+
+**Why it works:** Three-beat rhythm is deeply satisfying. Creates a sense of completeness. Can build from specific to abstract or narrow to wide.
+
+**Why it stops working:** When every emotional beat gets the three-item treatment, the rhythm becomes a crutch. The reader begins to feel managed — every important moment announced by the same cadence.
+
+**Threshold:** Watch for clustering. If two consecutive scenes end with triads, revise one. If a chapter has more than 3-4 triadic constructions, vary at least half.
+
+**Fix:** Try a single image instead of three. Or expand to four (which feels different). Or use a different structural rhythm entirely — a long sentence that runs, or a flat declarative that refuses to decorate.
+
+### 4. The Negative Definition
+
+**Pattern:** Defining something by what it is *not*, especially in chains.
+
+**Examples:**
+- "Not quite a smile and not quite grief"
+- "Not anger, exactly, but something adjacent to it"
+- "It wasn't fear. It wasn't courage. It was something else entirely."
+
+**Why it works:** Captures the experience of emotions that don't have names. Circles the feeling without pinning it down. Creates a sense of reaching.
+
+**Why it stops working:** When every complex emotion gets the negative-definition treatment, the prose starts to feel evasive. The reader wants to *arrive* somewhere, and repeated negations keep pushing the destination away.
+
+**Threshold:** 2-3 per chapter maximum. Reserve for genuinely unnamed emotional states, not for common emotions the prose could simply show.
+
+**Fix:** Commit to something. Rather than listing what the expression isn't, describe what the face *does* — a muscle tightening, a gaze shifting, a breath held. Let the reader name the emotion (or not).
+
+### 5. The Formulaic Echo
+
+**Pattern:** Near-identical sentences or paragraph endings appearing across chapters, creating unintentional refrains.
+
+**Examples:**
+- Same closing beat structure in consecutive chapters
+- Identical metaphor used for different characters
+- Same sentence rhythm at every scene transition
+
+**Why it's different from intentional motifs:** Intentional refrains are *recognisable* — the reader is meant to remember the earlier instance. Formulaic echoes are *invisible to the writer* — they emerge from habit, and the reader hears them before the writer does.
+
+**How to detect:** Search for repeated phrases across the manuscript. If a construction appears in more than two chapters and isn't clearly thematic, it's probably a smell.
+
+**Fix:** Vary the construction in all but the strongest instance. The best version of the repeated phrase gets to stay; the others need their own language.
+
+### 6. The Thematic Word Flood
+
+**Pattern:** A word chosen for its metaphorical weight gets used so often — literally and figuratively — that the reader can no longer tell when it's doing thematic work and when it's just vocabulary.
+
+**Examples:**
+- "cold" used 12 times in a chapter: the church is cold (literal), the flat is cold (literal), "the cold you carry" (metaphor), "the cold that never left" (metaphor), "only cold" (metaphor) — by the 8th use, the reader stops feeling anything
+- "dark/darkness" blanketing every scene transition
+- "sharp" applied to wit, air, glass, memory, and pain in a single chapter
+
+**Why it works (sparingly):** A well-chosen thematic word creates resonance when it appears in both literal and figurative contexts. The reader begins to feel the word accumulate meaning.
+
+**Why it stops working:** When the word appears in every paragraph, the resonance collapses into monotony. The reader starts seeing the word instead of what the word means. Worse, the literal and metaphorical uses start to blur — is this atmosphere or theme?
+
+**Threshold:** If a word appears more than 6-8 times in a chapter, audit each instance. Keep the literal uses that are necessary for setting. Keep the 2-3 strongest metaphorical uses. Cut or replace the rest.
+
+**Fix:** Separate literal and metaphorical uses in your mind. The literal ones (the room is cold) are setting — they should be invisible. The metaphorical ones (the cold she carries) are theme — they should land with weight. If a metaphorical use is surrounded by literal uses of the same word, the metaphor drowns.
+
+### 7. The Habitual Adjective
+
+**Pattern:** A single adjective becomes the default modifier for a character trait, emotion, or quality — applied so often it stops carrying meaning.
+
+**Examples:**
+- "careful" used 7 times in a chapter: careful attention, careful blankness, careful cursive, careful dance — the word becomes wallpaper
+- "quiet" applied to every form of restraint: quiet voice, quiet room, quiet anger, quiet strength
+- "small" as the default size descriptor: small table, small flat, small life, small gesture
+
+**Why it works (once or twice):** An adjective can characterise economically. "Careful blankness" tells you about a person in two words.
+
+**Why it stops working:** When the same adjective modifies everything, it characterises nothing. It becomes the writer's default rather than a deliberate choice. The reader starts to feel that the prose has one gear.
+
+**Threshold:** No single adjective more than 3 times per chapter unless it's in dialogue (characters can have verbal tics). Watch especially for clusters — the same word 5 times in a page is always a problem.
+
+**Fix:** Ask what "careful" actually means in each instance. "Careful blankness" means controlled. "Careful cursive" means precise. "Careful dance" means cautious. Use the more specific word. Each instance should earn its own adjective.
+
+### 8. The Default Atmosphere Word
+
+**Pattern:** A single word — often "quiet," "dark," "still," or "cold" — becomes the go-to modifier for every scene transition, setting description, and emotional beat.
+
+**Examples:**
+- "The flat was quiet when she arrived" — appearing near-verbatim across four consecutive chapters
+- "[Character] was quiet for a moment" — 12 times across a novel as the only way characters pause
+- "His/her voice was quiet" — 5 times, when "low," "soft," "thin," or "barely audible" would each work differently
+
+**Why it works:** Atmosphere words are invisible by design. "The flat was quiet" is unobtrusive, functional, quick. It sets a scene without drawing attention to itself.
+
+**Why it stops working:** Because it's invisible, the writer doesn't notice the repetition — but the reader's ear does. When every room is "quiet," every pause is "quiet," and every voice is "quiet," the word goes from atmosphere to drone. Worse, the writer loses access to the spectrum of silence: hush, stillness, vacancy, dead air, absence of sound, the held breath of an empty room.
+
+**Threshold:** "Quiet" (or its equivalent) more than 3 times per chapter or more than once in the same construction ("X was quiet for a moment") per 3 chapters.
+
+**Fix:** For scene transitions, vary the construction or cut it entirely — often the reader doesn't need to be told a room is quiet. For dialogue beats, replace with action (what does the character *do* during the pause?), physical description, or simply let the pause exist in the white space between lines.
+
+### 9. The Stock Expression
+
+**Pattern:** A clichéd phrase borrowed from the common stock of fiction writing, used as shorthand for an emotion or observation the prose hasn't earned.
+
+**Examples:**
+- "The smile did not reach his/her eyes"
+- "Let out a breath he/she didn't know he/she was holding"
+- "A shiver ran down her spine"
+- "His/her blood ran cold"
+- "Their eyes met across the room"
+
+**Why it was good (once, decades ago):** These phrases became clichés because they originally described something true and recognisable. The first writer who noticed that a false smile stops at the mouth was observant.
+
+**Why it never works now:** The reader has encountered this phrase thousands of times. It triggers recognition of *the phrase*, not of the emotion. The prose becomes wallpaper — the reader's eye slides past it, registering "false smile" as a unit of meaning rather than seeing the character's face.
+
+**Threshold:** Zero. These should never appear in literary fiction. Each is an opportunity for a specific, fresh observation that tells the reader something about *this* character in *this* moment.
+
+**Fix:** Look at the character. What does *their* false smile actually look like? A practised expression worn smooth from use. A smile that was only mouth. A brightness that stopped short, like a lamp under a shade. The goal is not to find a cleverer way to say the same thing — it's to actually *see* the character and describe what you see.
+
+### 10. The Mannered Metaphor
+
+**Pattern:** A figure substituted for a direct statement the prose could have made plainly. The writer reaches for the image not because it sees more, but because the plain sentence felt too plain.
+
+**Examples:**
+- "a dial worth turning" where the sentence means a thing worth changing
+- "the thought earned its keep" where it means the thought still mattered
+- "her patience was a coin she spent carefully" where it means she was running out of patience
+- "the afternoon paid its debts" for an afternoon that went well
+
+**Why it works (once):** A live metaphor reaches something the literal sentence cannot. It is the engine of the whole form — an image that shows the reader a thing they had not seen, in a way no plain statement could. Fiction without it is a police report.
+
+**Why it stops working:** The mannered figure is not that. It exists to display the writer, not to convey the idea, and readers can tell. That is why mannered prose irritates: it makes the reader work harder so the writer can perform. It is also imprecise. Metaphors drag in connotations the writer did not choose and cannot control — "a dial worth turning" imports a machine, a hand, a calibration, and if none of that belongs in the scene the reader carries it anyway. In a novel the cost compounds: every unchosen connotation is a small wrong note against the world the book has built.
+
+**Threshold:** Not a count, a test. Ask of each figure what the literal claim underneath it is, and whether the image does work the literal claim cannot. If it does, keep it — frequency is not the problem. If it is the same statement in better clothes, cut it. A chapter where every abstract noun has been issued a metaphor has this smell whatever the individual figures are worth.
+
+**Fix:** Say what you mean. When a literal phrase is available, use it. "A dial worth turning" becomes "worth changing"; "earned its keep" becomes "still mattered". Distinct from purple prose, which overwrites a description that was going to happen anyway — the mannered metaphor replaces a statement, and the plain version is usually shorter as well as clearer.
+
+## When a Smell is Intentional
+
+Some novels use these patterns deliberately as voice signatures. If a manuscript *knowingly* deploys paradoxical pairings as a narrative strategy — say, a protagonist who genuinely cannot reconcile contradictions — then frequency may be appropriate. But this should be a conscious choice documented in the project's tone guide, not an emergent habit.
+
+## Cross-Reference
+
+- `anti-patterns.md` — Higher-level story and prose mistakes
+- `prose-style.md` — Sentence-level craft guidance, including the prose anti-patterns this catalogue extends
+- `revision-editing.md` — Editing stages and when to address smells

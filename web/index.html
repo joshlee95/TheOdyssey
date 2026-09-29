@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The Odyssey</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <!-- 로비 -->
+  <section id="lobby" class="screen">
+    <div class="lobby-card">
+      <h1>⛵ The Odyssey</h1>
+      <p class="muted">친구들이 만든 섬을 항해하는 AI TRPG</p>
+      <label>닉네임 <input id="nickname" maxlength="20" placeholder="예: 건희" /></label>
+      <label class="check"><input type="checkbox" id="adult" /> 저는 성인이며, 성인 등급 방의 폭력적·성적 묘사에 동의합니다</label>
+      <div class="row">
+        <fieldset>
+          <legend>새 방 만들기</legend>
+          <label>등급
+            <select id="rating">
+              <option value="all">전체 이용가</option>
+              <option value="teen" selected>15세</option>
+              <option value="mature">성인</option>
+            </select>
+          </label>
+          <button id="create">방 만들기</button>
+        </fieldset>
+        <fieldset>
+          <legend>방 들어가기</legend>
+          <label>방 코드 <input id="code" maxlength="4" placeholder="ABCD" /></label>
+          <button id="join">들어가기</button>
+        </fieldset>
+      </div>
+      <button id="solo-mode" class="wide-btn">🧭 섬 선택 모드 — 혼자 골라서 플레이</button>
+      <button id="resume" class="ghost hidden">지난 방 이어서 하기</button>
+      <p><a href="/workshop.html">🏝️ 섬 공방 — 내 섬 만들고 혼자 해 보기</a></p>
+      <p id="lobby-error" class="error"></p>
+      <p class="muted small"><span id="gm-name"></span> · <a href="#" onclick="openSettings(); return false">⚙️ 설정</a></p>
+    </div>
+  </section>
+
+  <!-- 섬 선택 모드 -->
+  <section id="picker" class="screen hidden">
+    <div class="picker">
+      <div class="picker-head">
+        <button id="picker-back" class="ghost">← 처음으로</button>
+        <h2 id="picker-title">어느 섬으로 갈까요?</h2>
+        <span class="spacer"></span>
+        <select id="picker-rating">
+          <option value="all">전체</option>
+          <option value="teen" selected>15세</option>
+          <option value="mature">성인</option>
+        </select>
+      </div>
+      <div id="picker-islands" class="grid"></div>
+      <div id="picker-chars" class="hidden">
+        <p id="picker-chosen" class="muted"></p>
+        <h3>누구로 상륙할까요?</h3>
+        <div id="picker-pregens" class="grid"></div>
+      </div>
+      <p id="picker-error" class="error"></p>
+    </div>
+  </section>
+
+  <!-- 게임 -->
+  <section id="game" class="screen hidden">
+    <header class="topbar">
+      <div><strong id="room-code"></strong> <span id="room-rating" class="badge"></span></div>
+      <div id="island-info" class="island-info"></div>
+      <div class="muted small"><span id="gm-name-2"></span> <button class="tiny ghost" onclick="openSettings()">⚙️</button></div>
+    </header>
+
+    <main class="layout">
+      <div class="main-col">
+        <div id="log" class="log"></div>
+        <div id="live" class="entry narration live hidden"></div>
+        <div id="thinking" class="thinking hidden">GM이 이야기를 짓는 중…</div>
+
+        <div id="composer" class="composer">
+          <div class="kinds">
+            <label><input type="radio" name="kind" value="do" checked /> 행동</label>
+            <label><input type="radio" name="kind" value="say" /> 대사</label>
+            <label><input type="radio" name="kind" value="pass" /> 관망</label>
+            <label class="insp"><input type="checkbox" id="use-insp" /> 🌟 영감 사용 (이번 판정에 이점)</label>
+          </div>
+          <textarea id="action" rows="3" placeholder="무엇을 할까요? (괄호) 안은 다른 선원에게 비밀이에요. 예: 50골드를 준다 (실은 돌멩이를 건넨다)"></textarea>
+          <div id="preview" class="preview"></div>
+          <div class="composer-row">
+            <button id="submit">제출</button>
+            <button id="retract" class="ghost hidden">제출 취소</button>
+            <button id="resolve" class="ghost host-only">라운드 진행 ▶</button>
+            <span class="spacer"></span>
+            <button id="xcard" class="ghost" title="불편한 장면을 이유 없이 넘깁니다">✋ X카드</button>
+          </div>
+          <form id="chat-form" class="chat"><input id="chat" placeholder="게임 밖 잡담 (OOC)" maxlength="500" /></form>
+        </div>
+      </div>
+
+      <aside class="side">
+        <nav class="tabs">
+          <button data-tab="party" class="active">파티</button>
+          <button data-tab="me">나</button>
+          <button data-tab="rel">관계</button>
+          <button data-tab="ship">배</button>
+        </nav>
+        <div id="tab-party" class="tab"></div>
+        <div id="tab-me" class="tab hidden"></div>
+        <div id="tab-rel" class="tab hidden"></div>
+        <div id="tab-ship" class="tab hidden"></div>
+      </aside>
+    </main>
+
+    <!-- 캐릭터 만들기 / 섬 고르기 -->
+    <div id="overlay" class="overlay hidden"><div class="overlay-card" id="overlay-body"></div></div>
+  </section>
+
+  <script>
+    window.__wsTokens = (() => { try { return Object.values(JSON.parse(localStorage.getItem("workshop") || "{}")).map((x) => x.token); } catch { return []; } })();
+  </script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/app.js"></script>
+  <script src="/settings.js"></script>
+</body>
+</html>

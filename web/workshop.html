@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>섬 공방</title>
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="/workshop.css" />
+</head>
+<body>
+  <div class="ws">
+    <header class="ws-head">
+      <a href="/" class="muted small">← 게임으로</a> · <a href="#" class="muted small" onclick="openSettings(); return false">⚙️ 설정</a>
+      <h1>🏝️ 섬 공방</h1>
+      <p class="muted">내 섬 이야기를 형식 없이 자유롭게 쓰세요. 메모도, 줄글도, 대사 몇 줄도 괜찮아요. Claude가 읽고 게임용 섬으로 바꿔 줍니다.</p>
+    </header>
+
+    <section id="pick" class="ws-card">
+      <label>닉네임 <input id="author" maxlength="20" placeholder="예: 건희" /></label>
+      <div class="row2">
+        <input id="new-title" maxlength="40" placeholder="섬 이름 (나중에 바꿔도 돼요)" />
+        <button id="new">새 섬 만들기</button>
+      </div>
+      <h3>내 섬</h3>
+      <div id="mine" class="list"><p class="muted small">아직 없어요</p></div>
+      <p class="muted small">내 섬은 이 브라우저에만 열쇠가 저장돼요. 다른 기기에서 고치려면 같은 브라우저를 쓰세요.</p>
+    </section>
+
+    <section id="editor" class="ws-card hidden">
+      <div class="row2">
+        <input id="title" maxlength="40" />
+        <span id="status" class="muted small"></span>
+      </div>
+      <details class="hints">
+        <summary>무엇을 쓰면 좋을까요? (안 써도 돼요)</summary>
+        <ul class="small">
+          <li>어떤 세계인가요? 시대, 분위기, 마법이나 기술이 있는지</li>
+          <li>선원들이 도착하면 무엇이 보이나요? 처음 무슨 일이 벌어지나요?</li>
+          <li>이 섬의 진짜 비밀은? 누가 알고 있나요?</li>
+          <li>주민들: 이름, 성격, 말버릇, 원하는 것, 서로의 관계. 대사 몇 줄을 써 두면 그 말투 그대로 살아나요</li>
+          <li>이야기가 어떻게 흘러가면 좋을지, 어떤 결말들이 가능한지</li>
+          <li>선원들이 겪을 시련, 얻을 수 있는 축복이나 보물</li>
+          <li>절대 나오면 안 되는 것, 수위 (전체 · 15세 · 성인)</li>
+        </ul>
+      </details>
+      <textarea id="draft" rows="22" placeholder="예) 회사 건물 하나가 섬이야. 밤 12시가 넘으면 엘리베이터에 없는 층 버튼이 생기고, 거기 11년 전에 사라진 과장이 아직 일하고 있어. 부장은 다 알면서 모른 척함. 부장 말버릇은 '그건 위에서 정할 일이고'…"></textarea>
+      <div class="row2">
+        <button id="save" class="ghost">저장</button>
+        <button id="build">✨ 섬으로 만들기</button>
+        <span class="spacer"></span>
+        <label class="check small"><input type="checkbox" id="published" /> 친구들에게 공개</label>
+      </div>
+      <p id="progress" class="muted small"></p>
+      <p id="error" class="error"></p>
+
+      <div id="review" class="hidden">
+        <h3>만들어진 섬</h3>
+        <div id="preview" class="ws-preview"></div>
+        <div class="cols">
+          <div><h4>🙋 확인하고 싶은 점</h4><ul id="questions" class="small"></ul>
+            <p class="muted small">답을 위 글에 이어서 쓰고 다시 '섬으로 만들기'를 누르면 반영돼요.</p></div>
+          <div><h4>✍️ AI가 채운 부분</h4><ul id="invented" class="small"></ul></div>
+        </div>
+        <div id="warnings" class="small muted"></div>
+
+      </div>
+
+    </section>
+
+    <section id="solo-box" class="ws-card">
+        <h3>혼자 해 보기</h3>
+        <p class="muted small">나 혼자 GM과 대화하면서 섬을 체험해 보세요. 내 섬도, 다른 섬도 고를 수 있어요.</p>
+        <div class="row2">
+          <select id="solo-island"></select>
+        </div>
+        <div class="row2">
+          <select id="pregen"></select>
+          <select id="solo-rating">
+            <option value="all">전체</option>
+            <option value="teen" selected>15세</option>
+            <option value="mature">성인</option>
+          </select>
+          <label class="check small"><input type="checkbox" id="solo-adult" /> 성인 확인</label>
+          <button id="solo">▶ 혼자 해 보기</button>
+        </div>
+    </section>
+  </div>
+
+  <script>
+    // 섬 공방 토큰을 소켓 연결 때 넘겨서, 공개 전 내 섬도 섬 목록에 보이게 한다
+    window.__wsTokens = (() => { try { return Object.values(JSON.parse(localStorage.getItem("workshop") || "{}")).map((x) => x.token); } catch { return []; } })();
+  </script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/workshop.js"></script>
+  <script src="/settings.js"></script>
+</body>
+</html>
