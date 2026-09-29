@@ -90,7 +90,7 @@ system ② 등급 규칙 + 섬 팩 전체 + 물가표 + 선원 명단 + 항해�
 messages   라운드마다 <state>(막·시계·위치·호감도·전투·돈·비밀 행동) + <actions> 추가 (append-only)
 ```
 
-1. Claude가 도구를 부르며 서술을 스트리밍한다(`claude-opus-5`, adaptive thinking, effort 기본 high, 거절 시 `claude-opus-4-8`로 서버 측 fallback).
+1. Claude가 도구를 부르며 서술을 스트리밍한다(`claude-opus-5-5`, adaptive thinking, effort 기본 high, 거절 시 서버 측 fallback `"default"` — 거절 사유에 맞는 모델로 API가 넘김).
 2. 새 비밀 행동이 있던 라운드: 누출 검사(effort low) → 새었으면 그 부분만 고친다.
 3. **AI 티 검사**: `ai-tells-ko.json` 41개 패턴으로 센 뒤 기준을 넘으면 걸린 곳만 윤문(koreanizer 소설 모드 원칙). 고친 쪽이 더 나을 때만 바꾼다.
 4. 탄로 설명·결말 알림은 서술 뒤에 표시한다. 섬을 떠나면 항해일지 요약 + 레벨업.

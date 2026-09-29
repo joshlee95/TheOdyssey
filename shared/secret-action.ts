@@ -103,7 +103,7 @@ export function canSeeSecret(s: SecretAction, viewerId: string): boolean {
   return s.status !== "hidden" || s.playerId === viewerId || s.knownBy.includes(viewerId);
 }
 
-const escapeXml = (s: string) =>
+export const escapeXml = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
 /** GM 프롬프트에 넣을 선원 행동 블록. 선원이 쓴 텍스트는 태그를 만들 수 없게 이스케이프한다. */

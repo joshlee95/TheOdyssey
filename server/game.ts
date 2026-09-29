@@ -1,4 +1,6 @@
+// Portions Copyright (c) 2026 heojunfo
 // 게임 방 하나의 상태와 규칙 실행. 서버가 유일한 진실의 원천이고, 선원마다 보이는 것을 걸러서 내보낸다.
+import { randomBytes, timingSafeEqual } from "node:crypto";
 import { EventEmitter } from "node:events";
 import {
   type AffinityState,
@@ -112,7 +114,7 @@ export interface GM {
   summarize(game: Game): Promise<string>;
 }
 
-const newId = () => Math.random().toString(36).slice(2, 10);
+const newId = () => randomBytes(6).toString("hex");
 const POSITIONS = narrative.position.levels as { id: string; ko: string; on_fail: string; on_cost: string }[];
 const ORACLE = narrative.oracle_ironsworn as { odds: { id: string; ko: string; yes_if_d100_at_least: number }[] };
 const COMBAT_RULES = "행동 1회(공격·질주·이탈·회피·돕기·숨기·영향 주기·이능·대비·살피기·궁리·조작) + 이동 + 추가 행동/반응. 거리는 25ft 구역 단위로 말한다. 적 차례에는 attack을 적 id로 부른다.";
@@ -136,6 +138,8 @@ export class Game extends EventEmitter {
   /** 라운드 서술 뒤에 공개할 탄로 */
   private deferred: LogInput[] = [];
   private usedInspiration = new Set<string>();
+  /** 선원 id → 재접속 토큰. 본인에게만 알려 주고 snapshot에는 넣지 않는다 (id는 모두에게 보이므로) */
+  private resumeTokens = new Map<string, string>();
 
   constructor(code: string, rating: Rating) {
     super();
@@ -151,17 +155,31 @@ export class Game extends EventEmitter {
       coins: STARTING_BITS, armorBonus: 0, deathSaves: null,
     };
     this.players.set(player.id, player);
+    this.resumeTokens.set(player.id, randomBytes(16).toString("hex"));
     if (!this.hostId) this.hostId = player.id;
     this.addLog({ type: "system", text: `${nickname}님이 배에 올랐습니다.` });
     this.changed();
     return player;
   }
 
+  /** 재접속 토큰 — 선원 본인에게만 돌려준다 */
+  resumeToken(playerId: string): string {
+    return this.resumeTokens.get(playerId)!;
+  }
+
+  checkResumeToken(playerId: string, token: unknown): boolean {
+    const want = this.resumeTokens.get(playerId);
+    if (!want || typeof token !== "string" || token.length !== want.length) return false;
+    return timingSafeEqual(Buffer.from(token), Buffer.from(want));
+  }
+
   setCharacter(playerId: string, character: Character) {
     const p = this.mustPlayer(playerId);
+    // 섬에 있는 동안 캐릭터를 갈아 끼우면 HP·상태가 초기화되므로 막는다 (처음 만드는 것은 된다)
+    if (p.character && this.visit && this.phase !== "island_ended") throw new Error("섬에 있는 동안에는 캐릭터를 바꿀 수 없어요");
     p.character = character;
     p.sheet = deriveSheet(character);
-    p.hp = character.hp ?? p.sheet.maxHp;
+    p.hp = Math.max(0, Math.min(p.sheet.maxHp, character.hp ?? p.sheet.maxHp));
     p.conditions = [...character.conditions];
     p.items = [...character.items];
     this.addLog({ type: "system", text: `${p.nickname}님의 캐릭터: ${character.name} (${character.title})` });
@@ -261,7 +279,7 @@ export class Game extends EventEmitter {
         onText: (delta) => streaming && this.emit("gm:delta", delta),
       });
     } catch (err) {
-      this.addLog({ type: "system", text: `⚠️ GM 오류: ${(err as Error).message}. 같은 행동을 다시 제출해 주세요.` });
+      this.addLog({ type: "system", text: `⚠️ GM 오류: ${(err as Error).message}. 이번 라운드 행동은 GM에게 전달돼 있으니, 다시 내지 말고 다음 행동을 이어서 제출해 주세요.` });
       console.error(err);
     }
     this.emit("gm:status", "idle");
@@ -952,6 +970,37 @@ export class Game extends EventEmitter {
   }
 
   /** 이 선원 화면에 필요한 전체 상태 */
+  /** 서버를 다시 켜도 이어 할 수 있게 저장할 상태 (data/rooms.json) */
+  toJSON() {
+    return {
+      code: this.code, hostId: this.hostId, rating: this.rating, phase: this.phase,
+      players: [...this.players.values()], log: this.log, hiddenActions: this.hiddenActions, inspiration: this.inspiration,
+      shipHold: this.shipHold, shipLog: this.shipLog, visit: this.visit, pending: [...this.pending], xcards: this.xcards,
+      logSeq: this.logSeq, hiddenSeq: this.hiddenSeq, deferred: this.deferred, resumeTokens: [...this.resumeTokens],
+    };
+  }
+
+  static restore(data: ReturnType<Game["toJSON"]>): Game {
+    const g = new Game(data.code, data.rating);
+    g.hostId = data.hostId;
+    // 서술 도중에 꺼졌으면 그 라운드는 끝난 것으로 보고 다음 행동을 받는다
+    g.phase = data.phase === "resolving" ? "round_open" : data.phase;
+    g.players = new Map(data.players.map((p) => [p.id, { ...p, connected: false }]));
+    g.log = data.log;
+    g.hiddenActions = data.hiddenActions;
+    g.inspiration = data.inspiration;
+    g.shipHold = data.shipHold;
+    g.shipLog = data.shipLog;
+    g.visit = data.visit;
+    g.pending = new Map(data.pending);
+    g.xcards = data.xcards;
+    g.logSeq = data.logSeq;
+    g.hiddenSeq = data.hiddenSeq;
+    g.deferred = data.deferred;
+    g.resumeTokens = new Map(data.resumeTokens);
+    return g;
+  }
+
   snapshot(viewerId: string) {
     const v = this.visit;
     const me = this.players.get(viewerId);

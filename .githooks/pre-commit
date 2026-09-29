@@ -1,4 +1,5 @@
 #!/bin/sh
+# Portions Copyright (c) 2026 heojunfo
 # 커밋 전에 API 키·토큰처럼 생긴 문자열과 비밀 파일을 막는다.
 PATTERN='sk-ant-[A-Za-z0-9_-]{16,}|gh[opsu]_[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY'
 if git diff --cached -U0 --no-color | grep -E '^\+' | grep -qE "$PATTERN"; then
@@ -6,7 +7,7 @@ if git diff --cached -U0 --no-color | grep -E '^\+' | grep -qE "$PATTERN"; then
   git diff --cached -U0 --no-color | grep -nE "$PATTERN" | sed -E 's/(sk-ant-.{6}|gh._.{4}).*/\1…(가림)/' >&2
   exit 1
 fi
-if git diff --cached --name-only | grep -qE '(^|/)\.env($|\.)|^data/|workshop\.json$'; then
+if git diff --cached --name-only --diff-filter=d | grep -vE '(^|/)\.env\.example$' | grep -qE '(^|/)\.env($|\.)|^data/|workshop\.json$'; then
   echo "✗ 커밋 중단: .env / data/ / workshop.json 같은 비밀 파일은 올리지 않아요." >&2
   exit 1
 fi

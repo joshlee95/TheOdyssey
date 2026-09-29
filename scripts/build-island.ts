@@ -8,6 +8,7 @@ import path from "node:path";
 import { stringify } from "yaml";
 import { z } from "zod";
 import { IslandSchema, IslandShape, lintIsland } from "../shared/island";
+import { DEFAULT_MODEL } from "../server/settings";
 
 const ISLANDS_DIR = path.resolve(import.meta.dirname, "../islands");
 const MAX_ATTEMPTS = 3;
@@ -55,7 +56,7 @@ async function main() {
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
     console.log(`… 섬 팩 생성 중 (${attempt}/${MAX_ATTEMPTS})`);
     const response = await client.messages.parse({
-      model: "claude-opus-5",
+      model: process.env.GM_MODEL ?? DEFAULT_MODEL,
       max_tokens: 16000,
       system: system(id),
       messages: [

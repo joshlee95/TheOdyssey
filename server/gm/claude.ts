@@ -1,3 +1,4 @@
+// Portions Copyright (c) 2026 heojunfo
 // Claude GM — 라운드마다 스트리밍 + 도구 루프. 섬 하나 동안 대화를 이어 쓰고(append-only), 앞부분은 캐시한다.
 import Anthropic from "@anthropic-ai/sdk";
 import type { Game, GM, RoundInput } from "../game";
@@ -9,7 +10,8 @@ type Msg = Anthropic.Beta.Messages.BetaMessageParam;
 type Effort = "low" | "medium" | "high";
 
 const STYLE_BRIEF = "쓰지 않는 표현: 숨을 삼켰다·눈빛이 흔들렸다·정적이 흘렀다·공기가 무거워졌다·묘한/알 수 없는·~듯했다 연발·마치 ~처럼 남발·~에 대해·~에 의해·~하기 시작했다·그녀는 그녀의·과연 ~까?";
-const FALLBACK_MODEL = "claude-opus-4-8";
+/** 거절 시 서버 측 폴백("default": 거절 사유에 맞는 모델로 API가 알아서 넘김)을 지원하는 모델 — 모델을 추가할 때 여기도 본다 */
+const FALLBACK_FROM = new Set(["claude-opus-5-5", "claude-sonnet-5-5", "claude-fable-5-1", "claude-opus-5"]);
 const MAX_TOOL_TURNS = 16;
 
 export class ClaudeGM implements GM {
@@ -51,9 +53,9 @@ export class ClaudeGM implements GM {
       thinking: { type: "adaptive" as const },
       output_config: { effort },
       cache_control: { type: "ephemeral" as const },
-      // 거절되면 서버에서 다른 모델로 이어 가게 (Opus 5 · Fable 5.1에서만)
-      ...(this.model === "claude-opus-5" || this.model === "claude-fable-5-1"
-        ? { betas: ["server-side-fallback-2026-06-01"], fallbacks: [{ model: FALLBACK_MODEL }] }
+      // 거절되면 서버에서 다른 모델로 이어 가게 (FALLBACK_FROM 모델에서만)
+      ...(FALLBACK_FROM.has(this.model)
+        ? { betas: ["server-side-fallback-2026-07-01"], fallbacks: "default" as const }
         : {}),
     };
   }
@@ -61,6 +63,9 @@ export class ClaudeGM implements GM {
   async runRound(game: Game, input: RoundInput, hooks: { onText: (d: string) => void; streaming: boolean }): Promise<string> {
     const v = game.visit!;
     const messages = v.messages as Msg[];
+    // 기록은 덧붙이기만 한다(앞 턴을 고치면 thinking 블록이 무효가 된다). 지난 라운드가 오류로 끊겨 user 차례로
+    // 끝났어도 새 user 메시지를 그대로 붙이면 API가 한 차례로 합쳐 읽으므로, 그 라운드의 행동도 GM이 본다
+    closeDanglingToolUses(messages);
     messages.push({ role: "user", content: roundMessage(game, input) });
 
     let narration = "";
@@ -79,7 +84,10 @@ export class ClaudeGM implements GM {
         break;
       }
       if (msg.stop_reason === "pause_turn") continue;
-      if (msg.stop_reason === "max_tokens") break;
+      if (msg.stop_reason === "max_tokens") {
+        closeDanglingToolUses(messages);
+        break;
+      }
 
       const uses = msg.content.filter((b): b is Anthropic.Beta.Messages.BetaToolUseBlock => b.type === "tool_use");
       if (!uses.length) break;
@@ -97,8 +105,20 @@ export class ClaudeGM implements GM {
       }
     }
 
-    if (!hooks.streaming) narration = await this.guardLeaks(game, narration);
-    return this.polish(narration);
+    // 도구 효과는 이미 반영됐으니, 검수·윤문이 실패해도 서술은 버리지 않는다
+    if (!hooks.streaming) {
+      try {
+        narration = await this.guardLeaks(game, narration);
+      } catch (err) {
+        console.error("[leak-guard] 실패 — 원래 서술을 씁니다:", (err as Error).message);
+      }
+    }
+    try {
+      return await this.polish(narration);
+    } catch (err) {
+      console.error("[polish] 실패 — 원래 서술을 씁니다:", (err as Error).message);
+      return narration;
+    }
   }
 
   /** 들키지 않은 비밀 행동이 공개 서술에 새어 나왔는지 검사하고, 새었다면 그 부분만 고친다 */
@@ -172,4 +192,16 @@ function logUsage(msg: Anthropic.Beta.Messages.BetaMessage) {
   console.log(
     `[usage] in=${u.input_tokens} cache_read=${u.cache_read_input_tokens ?? 0} cache_write=${u.cache_creation_input_tokens ?? 0} out=${u.output_tokens} stop=${msg.stop_reason}`,
   );
+}
+
+/** 도구 호출 뒤 결과 없이 끝난 기록(max_tokens 잘림·중단)을 닫는다. 그대로 두면 이후 모든 요청이 400으로 실패한다 */
+function closeDanglingToolUses(messages: Msg[]) {
+  const last = messages.at(-1);
+  if (last?.role !== "assistant" || typeof last.content === "string") return;
+  const uses = last.content.filter((b): b is Anthropic.Beta.Messages.BetaToolUseBlockParam => b.type === "tool_use");
+  if (!uses.length) return;
+  messages.push({
+    role: "user",
+    content: uses.map((u) => ({ type: "tool_result" as const, tool_use_id: u.id, content: "응답이 잘려 실행하지 않았다", is_error: true })),
+  });
 }

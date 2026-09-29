@@ -1,0 +1,20 @@
+# Copyright (c) 2026 heojunfo
+# 푸시·PR마다 타입 검사, 단위 테스트, 섬 팩 검증을 돌린다 (API 키 없이, 비용 없음)
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run validate

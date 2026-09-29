@@ -1,3 +1,4 @@
+// Portions Copyright (c) 2026 heojunfo
 // The Odyssey 웹 클라이언트 — 서버가 보내는 state/log를 그리기만 한다.
 const socket = (window.socket = io({ auth: { tokens: window.__wsTokens ?? [] } }));
 const $ = (s) => document.querySelector(s);
@@ -22,7 +23,7 @@ if (last) $("#resume").classList.remove("hidden");
 
 async function enter(res) {
   if (!res.ok) return void ($("#lobby-error").textContent = res.error);
-  store.set("session", { code: res.code, playerId: res.playerId });
+  store.set("session", { code: res.code, playerId: res.playerId, token: res.token });
   store.set("nickname", $("#nickname").value.trim());
   $("#lobby").classList.add("hidden");
   $("#game").classList.remove("hidden");
@@ -81,7 +82,7 @@ function renderPicker() {
       nickname: $("#nickname").value.trim() || "선원", adult: $("#adult").checked,
     });
     if (!res.ok) return void ($("#picker-error").textContent = res.error);
-    const joined = await call("room:resume", { code: res.code, playerId: res.playerId });
+    const joined = await call("room:resume", { code: res.code, playerId: res.playerId, token: res.token });
     $("#picker").classList.add("hidden");
     enter(joined);
   }));

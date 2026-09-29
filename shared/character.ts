@@ -1,3 +1,4 @@
+// Portions Copyright (c) 2026 heojunfo
 // 캐릭터 카드 — BG3식 생성 절차(포인트 바이 · 숙련 · 전문화)를 따르되 세계관에는 묶이지 않는다.
 // 출신 세계(origin)와 호칭(title)은 자유롭게 쓰고, 규칙상 선택은 원형 · 출신 특성 · 배경 세 가지다.
 import { z } from "zod";
@@ -26,7 +27,9 @@ import {
 const keysOf = <T extends string>(obj: Record<T, unknown>) => Object.keys(obj) as [T, ...T[]];
 const AbilityEnum = z.enum(ABILITIES);
 const SkillEnum = z.enum(SKILL_IDS as [Skill, ...Skill[]]);
-const Text = z.string().trim().min(1);
+const Text = z.string().trim().min(1).max(200);
+/** 출신·컨셉처럼 조금 긴 자유 서술 */
+const LongText = z.string().trim().min(1).max(500);
 const BaseScore = z.number().int().min(POINT_BUY.min).max(POINT_BUY.max);
 
 export const Item = z.object({
@@ -39,8 +42,8 @@ export type Item = z.infer<typeof Item>;
 export const CharacterShape = z.object({
   name: Text,
   title: Text, // 호칭: "해커", "엘프 궁수", "야근 요정" 등 자유
-  origin: Text, // 출신 세계와 사연: "2026년 서울의 회사원. 퇴근길에 배에 올랐다"
-  concept: Text, // 한 줄 컨셉
+  origin: LongText, // 출신 세계와 사연: "2026년 서울의 회사원. 퇴근길에 배에 올랐다"
+  concept: LongText, // 한 줄 컨셉
   archetype: z.enum(keysOf(ARCHETYPES)),
   origin_trait: z.enum(keysOf(ORIGIN_TRAITS)),
   background: z.enum([...keysOf(BACKGROUNDS), "custom"]),
@@ -57,9 +60,9 @@ export const CharacterShape = z.object({
   /** 출신 특성이 주는 자유 기술 (다재다능) */
   bonus_skills: z.array(SkillEnum).default([]),
   expertise: z.array(SkillEnum).default([]),
-  hp: z.number().int().optional(), // 없으면 최대 HP
-  conditions: z.array(Text).default([]),
-  items: z.array(Item).default([]),
+  hp: z.number().int().min(0).optional(), // 없으면 최대 HP (최대 HP를 넘으면 게임에서 잘라 낸다)
+  conditions: z.array(Text).max(20).default([]),
+  items: z.array(Item).max(30).default([]),
 });
 export type Character = z.infer<typeof CharacterShape>;
 

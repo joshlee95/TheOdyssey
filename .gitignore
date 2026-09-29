@@ -18,8 +18,8 @@ islands/*
 islands/**/island.prev.yaml
 islands/**/review.md
 
-# 서버 설정 (API 키)
-data/
+# 서버 설정 (API 키) · 저장된 방 — 저장소 맨 위 data/만. shared/data/(규칙 데이터)는 올린다
+/data/
 
 # 로컬 전용
 .DS_Store

@@ -1,3 +1,4 @@
+// Portions Copyright (c) 2026 heojunfo
 // 섬 공방 클라이언트
 const socket = (window.socket = io({ auth: { tokens: window.__wsTokens } }));
 const $ = (s) => document.querySelector(s);
@@ -151,6 +152,6 @@ $("#solo").onclick = async () => {
     rating: $("#solo-rating").value, adult: $("#solo-adult").checked, pregen: Number($("#pregen").value),
   });
   if (!res.ok) return alert(res.error);
-  localStorage.setItem("session", JSON.stringify({ code: res.code, playerId: res.playerId }));
+  localStorage.setItem("session", JSON.stringify({ code: res.code, playerId: res.playerId, token: res.token }));
   location.href = "/?resume=1";
 };

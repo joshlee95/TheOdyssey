@@ -1,9 +1,11 @@
+// Portions Copyright (c) 2026 heojunfo
 // 자유 서술(draft) → 섬 팩 변환. 명령어(scripts/build-island.ts)와 웹 섬 공방이 같이 쓴다.
 import Anthropic from "@anthropic-ai/sdk";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { z } from "zod";
 import { type Island, IslandSchema, IslandShape, lintIsland } from "../shared/island";
 import { lintProse } from "../shared/prose-lint";
+import { DEFAULT_MODEL } from "./settings";
 
 const MAX_ATTEMPTS = 3;
 const notes = {
@@ -54,9 +56,10 @@ export async function buildIsland(opts: {
   let feedback = "";
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
     opts.onProgress?.(`섬을 짓는 중 (${attempt}/${MAX_ATTEMPTS})`);
-    const response = await client.messages.parse({
-      model: opts.model ?? process.env.GM_MODEL ?? "claude-opus-5",
-      max_tokens: 32000,
+    // 출력이 길어 스트리밍으로 받는다 (SDK는 max_tokens가 크면 비스트리밍 요청을 보내기 전에 거절한다)
+    const stream = client.messages.stream({
+      model: opts.model ?? process.env.GM_MODEL ?? DEFAULT_MODEL,
+      max_tokens: 64000,
       system: system(opts.id, opts.author),
       messages: [
         {
@@ -70,6 +73,7 @@ export async function buildIsland(opts: {
       ],
       output_config: { format: zodOutputFormat(BuildFormat) },
     });
+    const response = await stream.finalMessage();
 
     if (response.stop_reason === "refusal") throw new Error(`변환이 거절됐어요: ${response.stop_details?.explanation ?? "사유 없음"}`);
     if (response.stop_reason === "max_tokens") throw new Error("출력이 너무 길어 잘렸어요. 글을 조금 줄여 주세요");
@@ -93,6 +97,7 @@ export async function buildIsland(opts: {
       continue;
     }
     const { island, invented, questions } = result.data;
+    island.id = opts.id; // 모델이 다른 섬 id를 써도 폴더 이름을 따른다 (공식 섬을 덮어쓰지 못하게)
     const proseScore = JSON.stringify(island).length ? lintProse(collectText(island)).score : 0;
     return { island, invented, questions, warnings: lintIsland(island), proseScore };
   }
