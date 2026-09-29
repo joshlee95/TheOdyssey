@@ -1,0 +1,341 @@
+{
+  "_meta": {
+    "title": "거래·상점·경제 데이터 (세계 공통 코인 + 기술 수준별 물가)",
+    "version": 1,
+    "sources": [
+      { "id": "srd52", "name": "System Reference Document 5.2 (Equipment, Magic Items, Character Creation)", "url": "https://www.dndbeyond.com/srd", "license": "CC BY 4.0" },
+      { "id": "msrd", "name": "d20 Modern System Reference Document (Wealth, Weapons, Armor, Lifestyle, Restricted Objects, Gather Information, Bribery)", "url": "https://archive.org/details/d20modernsrd", "license": "OGL 1.0a" },
+      { "id": "d20future", "name": "d20 Future (MSRD 수록) Progress Level 규칙", "url": "https://en.wikipedia.org/wiki/D20_Future", "license": "OGL 1.0a (2차 출처로 확인)" },
+      { "id": "blades", "name": "Blades in the Dark SRD (Acquire Asset, Downtime)", "url": "https://bladesinthedark.com/", "license": "CC BY 3.0" }
+    ],
+    "note": "source가 'ours'인 값은 원문에 규칙이 없어 우리가 정한 조정값이다. 설명은 모두 우리 말로 새로 썼다."
+  },
+
+  "currency": {
+    "unit": "coin",
+    "unit_ko": "코인",
+    "equals": "SRD 5.2의 금화(GP) 1개",
+    "sub_units": [
+      { "id": "coin", "value": 1, "srd": "GP" },
+      { "id": "dime", "value": 0.1, "srd": "SP" },
+      { "id": "bit", "value": 0.01, "srd": "CP" }
+    ],
+    "server_rule": "서버는 모든 금액을 bit(0.01 코인) 정수로 저장한다. GM과 화면은 섬의 화폐 이름으로 바꿔 보여 준다.",
+    "flavor_by_tech": {
+      "primitive": { "coin": "귀한 조개 목걸이 1줄", "dime": "흑요석 조각", "bit": "말린 고기 한 줌", "barter": true },
+      "medieval": { "coin": "금화", "dime": "은화", "bit": "동전" },
+      "industrial": { "coin": "2달러", "dime": "20센트", "bit": "2센트" },
+      "modern": { "coin": "8만 원", "dime": "8천 원", "bit": "800원" },
+      "futuristic": { "coin": "100크레딧", "dime": "10크레딧", "bit": "1크레딧" }
+    },
+    "flavor_by_island_examples": {
+      "moonlit-palace": { "coin": "1냥", "dime": "1전", "bit": "1푼", "note": "1냥 = 10전 = 100푼이라 그대로 맞는다" },
+      "cloud-sword-peak": { "coin": "은자 1냥", "dime": "동전 100문", "bit": "동전 10문" },
+      "dustwind-gulch": { "coin": "2달러", "dime": "20센트", "bit": "2센트", "note": "맥주 한 잔(4 bit) = 8센트" },
+      "rain-city": { "coin": "5달러", "dime": "50센트", "bit": "5센트", "note": "식당 한 끼(1 dime) = 50센트" },
+      "overtime-tower": { "coin": "8만 원 (법인카드 포인트)", "dime": "8천 원", "bit": "800원" },
+      "neon-harbor": { "coin": "100크레딧", "dime": "10크레딧", "bit": "1크레딧" },
+      "rust-ark": { "coin": "배급권 1장", "dime": "물 1리터 쿠폰", "bit": "나사 1개" },
+      "candy-republic": { "coin": "금박 초콜릿 동전", "dime": "은박 사탕", "bit": "설탕 한 알" }
+    },
+    "crossing_islands": {
+      "source": "ours",
+      "rule": "섬을 떠나면 남은 돈은 같은 코인 가치로 다음 섬 화폐가 된다 (항해하는 배가 환전해 준다는 설정). 단 섬 world.laws에 '외지 돈은 받지 않는다' 같은 규칙이 있으면 그 섬에서는 물물교환·보석·유물로만 거래한다."
+    },
+    "valuables": "보석·예술품·교역품은 어느 섬에서나 제값(100%)에 팔린다 (SRD). 그래서 섬을 넘나드는 '안전 자산'이다."
+  },
+
+  "price_from_msrd_dc": {
+    "source": "ours",
+    "formula": "coin = 2 ^ ((purchase_DC - 9) / 2)",
+    "meaning": "MSRD 구매 DC 9 = 1코인, DC가 2 오를 때마다 2배. SRD 숙박·식사 가격과 MSRD 숙박·식사 DC를 맞춰 정했다",
+    "anchor_check": [
+      { "item": "싼 모텔 / SRD 보통 여관", "msrd_dc": 7, "coin": 0.5, "srd_coin": 0.5 },
+      { "item": "평범한 호텔 / SRD 편안한 여관", "msrd_dc": 9, "coin": 1, "srd_coin": 0.8 },
+      { "item": "고급 호텔 / SRD 부유한 여관", "msrd_dc": 11, "coin": 2, "srd_coin": 2 },
+      { "item": "패스트푸드 / SRD 빈곤한 식사", "msrd_dc": 2, "coin": 0.09, "srd_coin": 0.02 },
+      { "item": "고급 레스토랑 / SRD 귀족 식사", "msrd_dc": 9, "coin": 1, "srd_coin": 0.6 }
+    ],
+    "quick_table": { "2": 0.09, "4": 0.18, "5": 0.25, "6": 0.35, "7": 0.5, "8": 0.7, "9": 1, "10": 1.4, "11": 2, "12": 2.8, "13": 4, "14": 5.7, "15": 8, "16": 11, "17": 16, "18": 23, "19": 32, "20": 45, "21": 64, "22": 90, "23": 128, "25": 256, "28": 724, "30": 1448 }
+  },
+
+  "tech_levels": {
+    "source": "d20future",
+    "mapping": [
+      { "id": "primitive", "ko": "원시", "pl": [0, 1], "pl_names": ["석기 시대", "청동·철기 시대"] },
+      { "id": "medieval", "ko": "중세", "pl": [2], "pl_names": ["중세"] },
+      { "id": "industrial", "ko": "산업", "pl": [3, 4], "pl_names": ["이성의 시대(화약·범선)", "산업 시대(증기·전신·탄약식 화기)"] },
+      { "id": "modern", "ko": "현대", "pl": [5], "pl_names": ["정보 시대"] },
+      { "id": "futuristic", "ko": "미래", "pl": [6, 7, 8], "pl_names": ["핵융합 시대", "중력 시대", "에너지 시대"] }
+    ],
+    "cross_tech_price": {
+      "lower_tech": "섬보다 낮은 기술 물건: 한 단계 낮을 때마다 값 ×0.5 (MSRD DC -2와 같음). 단 골동품·문화재는 예외",
+      "one_higher": "한 단계 높은 물건: 값 ×5 (DC +5에 해당), 도시·암시장에서만, 재고 1~2개",
+      "two_or_more_higher": "살 수 없다. 유물(treasures)이나 이상 현상으로만 나온다",
+      "effect_link": "산 물건이 실제로 작동하는지는 섬의 crossover 규칙(works/weakened/transformed/fails)을 따른다"
+    }
+  },
+
+  "cost_of_living": {
+    "source": "srd52",
+    "lifestyle_per_day": [
+      { "id": "wretched", "ko": "비참", "coin": 0, "looks": "노숙, 구걸" },
+      { "id": "squalid", "ko": "누추", "coin": 0.1, "looks": "쪽방, 합숙소" },
+      { "id": "poor", "ko": "궁핍", "coin": 0.2, "looks": "싸구려 하숙" },
+      { "id": "modest", "ko": "보통", "coin": 1, "looks": "평범한 셋방, 평범한 삶" },
+      { "id": "comfortable", "ko": "편안", "coin": 2, "looks": "작은 집, 약간의 사치" },
+      { "id": "wealthy", "ko": "부유", "coin": 4, "looks": "하인·비서가 있음" },
+      { "id": "aristocratic", "ko": "귀족", "coin": 10, "looks": "저택과 수행원. 남의 눈에 띈다" }
+    ],
+    "inn_per_night": { "squalid": 0.07, "poor": 0.1, "modest": 0.5, "comfortable": 0.8, "wealthy": 2, "aristocratic": 4 },
+    "meal": { "squalid": 0.01, "poor": 0.02, "modest": 0.1, "comfortable": 0.2, "wealthy": 0.3, "aristocratic": 0.6 },
+    "drink": { "ale_mug": 0.04, "bread_loaf": 0.02, "cheese_wedge": 0.1, "wine_common": 0.2, "wine_fine": 10 },
+    "modern_equivalents_msrd": [
+      { "item": "영화 표", "dc": 3, "coin": 0.13 },
+      { "item": "공연·경기 표", "dc": 7, "coin": 0.5 },
+      { "item": "패밀리 레스토랑", "dc": 4, "coin": 0.18 },
+      { "item": "렌터카 경차/일", "dc": 6, "coin": 0.35 },
+      { "item": "렌터카 고급/일", "dc": 10, "coin": 1.4 },
+      { "item": "국내선 일반석(왕복)", "dc": 14, "coin": 5.7 },
+      { "item": "국제선 일반석(왕복)", "dc": 18, "coin": 23 },
+      { "item": "작은 집 계약금", "dc": 30, "coin": 1448 }
+    ]
+  },
+
+  "services": {
+    "source": "srd52",
+    "hireling_skilled_per_day": 2,
+    "hireling_untrained_per_day": 0.2,
+    "messenger_per_mile": 0.02,
+    "ship_passage_hammock_per_day": 0.5,
+    "ship_cabin_per_day": 2,
+    "stabling_per_day": 0.5,
+    "ship_repair_per_hp": { "coin": 20, "days": 1, "shipyard": "시간·비용 절반" },
+    "special_service_tiers": {
+      "note": "SRD '주문 시전 서비스' 표를 세계 중립으로 바꿨다. 판타지에선 주문, 현대에선 수술·해킹·법률, 미래에선 신체 개조·데이터 복원",
+      "tiers": [
+        { "tier": 0, "srd": "소마법", "coin": 30, "where": ["village", "town", "city"], "looks": "간단한 축복 / 응급 진료 / 휴대폰 잠금 해제" },
+        { "tier": 1, "srd": "1레벨", "coin": 50, "where": ["village", "town", "city"], "looks": "상처 치료 / 외래 치료 / 간단한 해킹" },
+        { "tier": 2, "srd": "2레벨", "coin": 200, "where": ["village", "town", "city"], "looks": "해독·저주 약화 / 입원 치료 / 기록 조회" },
+        { "tier": 3, "srd": "3레벨", "coin": 300, "where": ["town", "city"], "looks": "저주 해제 / 수술 / 보안망 침투" },
+        { "tier": 4, "srd": "4~5레벨", "coin": 2000, "where": ["town", "city"], "looks": "중대한 복원 / 전문 수술 / 신분 세탁" },
+        { "tier": 6, "srd": "6~8레벨", "coin": 20000, "where": ["city"], "looks": "기적 / 장기 이식·의체 / 국가 기밀" },
+        { "tier": 9, "srd": "9레벨", "coin": 100000, "where": ["city"], "looks": "소원·부활급 / 불가능에 가까운 일" }
+      ]
+    }
+  },
+
+  "information_and_bribes": {
+    "source": "msrd",
+    "gather_information": {
+      "time": "1d4+1시간 탐문",
+      "levels": [
+        { "id": "general", "ko": "소문", "check_dc": 10, "cost_coin": 0.25 },
+        { "id": "specific", "ko": "특정 질문", "check_dc": 15, "cost_coin": 1.4 },
+        { "id": "restricted", "ko": "제한 정보", "check_dc": 20, "cost_coin": 8 },
+        { "id": "protected", "ko": "기밀", "check_dc": 25, "cost_coin": 45, "risk": "누군가 캐묻는 것을 눈치챈다 → 위기 시계 +1 권장" }
+      ],
+      "check_skill": "설득 또는 학식(관습) — 우리 기술로 환산 (ours)",
+      "gumshoe_override": "섬 비밀의 핵심 단서는 판정 없이 준다. 판정은 추가 정보·속도·대가를 가른다 (narrative.json의 core_clues)"
+    },
+    "bribes_coin": { "bouncer": 0.35, "informant": 0.5, "bureaucrat": 1.4, "police_officer": 1.4 },
+    "bribe_effect": "뇌물이 받아들여지면 해당 사회 판정 +2, 뇌물 가격을 넘겨 준 만큼 더 (최대 +10). 모욕으로 받아들이는 NPC는 호감도 한 단계 하락 또는 신고",
+    "bribe_affinity": { "source": "ours", "insulted_delta": -15, "accepted_delta": 0, "note": "뇌물은 호감도를 올리지 않는다. 거래일 뿐이다" }
+  },
+
+  "restricted_goods": {
+    "source": "msrd",
+    "levels": [
+      { "id": "licensed", "ko": "허가 필요", "license_coin": 1.4, "black_market_mult": 1.4, "days": 1 },
+      { "id": "restricted", "ko": "제한", "license_coin": 8, "black_market_mult": 2, "days": 2 },
+      { "id": "military", "ko": "군용", "license_coin": 45, "black_market_mult": 2.8, "days": 3 },
+      { "id": "illegal", "ko": "불법", "license_coin": 256, "black_market_mult": 4, "days": 4 }
+    ],
+    "find_black_market_dc": { "big_city": 15, "town": 20, "village": 25 },
+    "rush": "하루 줄일 때마다 가격 ×1.4 (DC +1)",
+    "sell_stolen": "장물·불법품은 암시장에서만, 판매가 추가 ×0.35 (DC -3)",
+    "examples_by_island": { "moonlit-palace": "궁중 약재·병장기는 '제한'", "neon-harbor": "군용 의체는 '군용'", "dustwind-gulch": "다이너마이트는 '허가 필요'" }
+  },
+
+  "buying_and_selling": {
+    "sell_equipment": "장비는 정가의 50%에 팔린다 (SRD)",
+    "sell_valuables": "보석·예술품·교역품은 100% (SRD)",
+    "sell_magic": "마법·이상 물건은 희귀도 가치 기준. 소모품은 절반 (SRD 희귀도 표)",
+    "shopping_time": "흔하지 않은 물건은 구하는 데 (MSRD 구매 DC)시간이 걸린다 → 우리 환산: 한 장면 소모 (ours)",
+    "aid": "동료가 거들면 흥정 판정에 이점 (SRD 돕기 행동)",
+    "affinity_price_mult": { "source": "ours", "hostile": null, "wary": 1.25, "neutral": 1.0, "friendly": 0.9, "trusted": 0.8, "bonded": 0.75, "hostile_note": "적대 단계 상인은 팔지 않는다 (affinity.ts 기본 행동과 일치)" }
+  },
+
+  "haggling": {
+    "source": "ours (SRD 5.2 영향 주기 행동 위에 얹음)",
+    "base": "상인이 '망설이는' 요청일 때만 판정한다. 기꺼운 요청(단골 할인 등)은 판정 없이, 불쾌한 요청(반값에 내놔)은 판정 없이 거절 (SRD 영향 주기)",
+    "dc": "max(15, 상인 지능 점수). 지능 점수가 없으면 눈썰미 DC(ALERTNESS_DC)+2",
+    "skills": { "persuasion": "정직한 흥정", "deception": "가짜 시세·거짓 사정", "intimidation": "겁주기 — 성공해도 호감도 -10", "performance": "분위기 띄우기", "insight_first": "먼저 통찰(살피기)로 DC 13 성공 시 상인의 최저가를 알아 이점" },
+    "advantage_from_affinity": "affinity.ts socialAdvantage를 그대로 쓴다",
+    "results": [
+      { "id": "crit_success", "when": "자연 20", "buy_mult": 0.75, "sell_mult": 0.65, "affinity": 5 },
+      { "id": "great_success", "when": "DC를 5 이상 넘음", "buy_mult": 0.8, "sell_mult": 0.6, "affinity": 0 },
+      { "id": "success", "when": "DC 이상", "buy_mult": 0.9, "sell_mult": 0.55, "affinity": 0 },
+      { "id": "fail", "when": "DC 미만", "buy_mult": 1.0, "sell_mult": 0.5, "affinity": 0, "retry": "같은 방식으로는 24시간 뒤 (SRD)" },
+      { "id": "bad_fail", "when": "DC보다 5 이상 낮음", "buy_mult": 1.1, "sell_mult": 0.45, "affinity": -5 },
+      { "id": "crit_fail", "when": "자연 1", "buy_mult": null, "sell_mult": null, "affinity": -10, "effect": "거래 거부. 속임수였다면 들킨 것으로 처리" }
+    ],
+    "limit": "장비 판매가는 정가의 65%를 넘지 않는다. 교역품·보석은 흥정해도 100%를 넘지 않는다"
+  },
+
+  "settlements": {
+    "source": "srd52 (판매처 규모 규칙) + ours (상한 금액)",
+    "tiers": [
+      { "id": "outpost", "ko": "외딴 거점", "max_item_coin": 25, "magic": [], "service_tier_max": 0 },
+      { "id": "village", "ko": "마을", "max_item_coin": 100, "magic": ["common"], "service_tier_max": 2 },
+      { "id": "town", "ko": "읍·소도시", "max_item_coin": 500, "magic": ["common"], "service_tier_max": 4 },
+      { "id": "city", "ko": "도시", "max_item_coin": 5000, "magic": ["common", "uncommon", "rare"], "service_tier_max": 9 },
+      { "id": "wondrous", "ko": "경이로운 곳", "max_item_coin": null, "magic": ["common", "uncommon", "rare", "very_rare", "legendary"], "service_tier_max": 9, "note": "다른 차원의 도시, 섬의 심장부 등" }
+    ]
+  },
+
+  "shop_archetypes": [
+    { "id": "general", "ko": "잡화점", "stock": ["gear", "food", "clothing"], "looks": { "medieval": "잡화상", "industrial": "제너럴 스토어", "modern": "편의점·마트", "futuristic": "자판기 구역" } },
+    { "id": "armory", "ko": "무기·방어구점", "stock": ["weapons", "armor", "ammo"], "looks": { "primitive": "석공 움막", "medieval": "대장간", "industrial": "총포상", "modern": "총포사(허가)·군용품점", "futuristic": "무장 인쇄소" } },
+    { "id": "healer", "ko": "치료소", "stock": ["potions", "medicine", "service:healing"], "looks": { "medieval": "약방·신전", "modern": "약국·병원", "futuristic": "메디베이" } },
+    { "id": "arcane", "ko": "기이한 물건점", "stock": ["magic", "anomaly", "service:special"], "requires": "섬 magic이 rare 이상이거나 hidden인 경우 뒷방에만", "looks": { "medieval": "마법 상점", "modern": "골동품점 뒷방", "futuristic": "불법 개조 공방" } },
+    { "id": "fence", "ko": "장물아비·암시장", "stock": ["restricted", "stolen"], "sell_mult": "장물 규칙 적용", "looks": { "medieval": "뒷골목 전당포", "modern": "다크웹 판매자", "futuristic": "밀수 화물칸" } },
+    { "id": "inn", "ko": "여관·주점", "stock": ["lodging", "meal", "drink", "rumor:general"], "looks": { "medieval": "객잔·주막", "industrial": "살롱", "modern": "모텔·바", "futuristic": "캡슐 호텔" } },
+    { "id": "transport", "ko": "탈것·운송", "stock": ["mounts", "vehicles", "passage"], "looks": { "medieval": "마방", "industrial": "역마차·기차역", "modern": "렌터카", "futuristic": "셔틀 정비고" } },
+    { "id": "broker", "ko": "정보상", "stock": ["information"], "uses": "information_and_bribes", "looks": { "medieval": "객잔 주인·기생", "industrial": "신문 기자", "modern": "흥신소", "futuristic": "데이터 브로커" } }
+  ],
+  "inventory_rule": { "source": "ours", "rule": "상점 재고는 섬 방문 시 서버가 상점 유형 × 정착지 규모로 생성하고 고정한다 (새로고침 금지). 희귀도 한 단계 위 물건 0~1개를 '오늘의 물건'으로 둔다" },
+
+  "gear_by_tech": {
+    "primitive": {
+      "weapons": [
+        { "name": "몽둥이", "damage": "1d4 타격", "props": ["light"], "coin": 0.1 },
+        { "name": "돌도끼", "damage": "1d6 참격", "props": ["light", "thrown 20/60"], "coin": 2.5 },
+        { "name": "창", "damage": "1d6 관통 (양손 1d8)", "props": ["thrown 20/60", "versatile"], "coin": 0.5 },
+        { "name": "투창", "damage": "1d6 관통", "props": ["thrown 30/120"], "coin": 0.25 },
+        { "name": "투석끈", "damage": "1d4 타격", "range": "30/120", "coin": 0.05 },
+        { "name": "사냥활", "damage": "1d6 관통", "range": "80/320", "coin": 12 },
+        { "name": "바람총", "damage": "1 관통 (독과 함께)", "range": "25/100", "coin": 5 }
+      ],
+      "armor": ["light_low (가죽) 5", "medium_low (두꺼운 가죽) 5", "shield (나무) 5"],
+      "note": "원시 섬 가격은 중세(SRD) 값의 절반 (기술 한 단계 아래 규칙)"
+    },
+    "medieval": {
+      "weapons": "SRD 5.2 무기표 전체 (예: 단검 1d4 2, 소검 1d6 10, 장검 1d8/1d10 15, 대검 2d6 50, 레이피어 1d8 25, 단궁 1d6 25, 장궁 1d8 50, 경쇠뇌 1d8 25, 중쇠뇌 1d10 50)",
+      "armor": "combat.json ac_tiers의 cost (SRD 방어구 가격 그대로)",
+      "gear": { "rope": 1, "torch": 0.01, "rations_day": 0.5, "healers_kit": 5, "potion_healing_2d4_2": 50, "lantern_hooded": 5, "thieves_tools": 25, "spyglass": 1000, "tent": 2, "backpack": 2 }
+    },
+    "industrial": {
+      "weapons": [
+        { "name": "전장식 권총", "damage": "1d10 관통", "props": ["loading"], "range": "30/90", "coin": 25, "note": "SRD는 판타지 기준 250. 산업 섬 현지가는 우리 조정" },
+        { "name": "머스킷", "damage": "1d12 관통", "props": ["loading", "two_handed"], "range": "40/120", "coin": 50, "note": "위와 같음" },
+        { "name": "리볼버", "damage": "2d6 관통", "range": "30/90", "coin": 8, "msrd_dc": 15 },
+        { "name": "대구경 리볼버", "damage": "2d8 관통", "coin": 8, "msrd_dc": 15 },
+        { "name": "레버액션 소총", "damage": "2d10 관통", "range": "90/270", "coin": 8, "msrd_dc": 15 },
+        { "name": "산탄총", "damage": "2d8 관통", "range": "30/90", "coin": 8, "msrd_dc": 15 },
+        { "name": "다이너마이트", "damage": "SRD 연금술 불 대신 3d6 화염·천둥, 반경 10ft 민첩 내성 DC 13", "coin": 5, "source": "ours", "restriction": "licensed" }
+      ],
+      "armor": ["unarmored (양복)", "light_low (두꺼운 코트) 10", "light_high (가죽 조끼) 45"],
+      "gear": { "telegram": 0.1, "train_ticket_100mi": 1, "pocket_watch": 5, "camera": 25, "kerosene_lamp": 0.5 },
+      "gear_source": "산업 시대 잡화 값은 SRD 비슷한 물건(램프 0.5, 망원경 등)과 MSRD 환산을 섞은 우리 추정 (ours)"
+    },
+    "modern": {
+      "weapons": [
+        { "name": "잭나이프", "damage": "1d4 관통", "props": ["light", "finesse"], "coin": 0.5, "msrd_dc": 7 },
+        { "name": "마체테", "damage": "1d6 참격", "props": ["light"], "coin": 0.25, "msrd_dc": 5 },
+        { "name": "진압봉·톤파", "damage": "1d6 타격", "coin": 0.35, "msrd_dc": 6 },
+        { "name": "카타나", "damage": "1d8 참격 (양손 1d10)", "props": ["versatile"], "coin": 3, "msrd_dc": 12 },
+        { "name": "테이저", "damage": "1d4 전격 + 건강 DC 15 실패 시 1d6라운드 마비", "range": "5ft 이내 사격", "coin": 0.5, "msrd_dc": 7 },
+        { "name": "소구경 권총", "damage": "2d4 관통", "coin": 8, "msrd_dc": 15, "restriction": "licensed" },
+        { "name": "권총(9mm)", "damage": "2d6 관통", "range": "30/90", "coin": 11, "msrd_dc": 16, "restriction": "licensed" },
+        { "name": "대구경 권총", "damage": "2d8 관통", "coin": 23, "msrd_dc": 18, "restriction": "licensed" },
+        { "name": "기관단총", "damage": "2d6 관통", "props": ["autofire"], "coin": 23, "msrd_dc": 18, "restriction": "restricted" },
+        { "name": "산탄총", "damage": "2d8 관통", "coin": 8, "msrd_dc": 15, "restriction": "licensed" },
+        { "name": "돌격소총", "damage": "2d8 관통", "props": ["autofire", "two_handed"], "range": "80/240", "coin": 11, "msrd_dc": 16, "restriction": "restricted" },
+        { "name": "사냥·저격 소총", "damage": "2d10 관통", "props": ["two_handed"], "range": "90/270", "coin": 16, "msrd_dc": 17, "restriction": "licensed" },
+        { "name": "대물 저격총", "damage": "2d12 관통", "props": ["heavy", "two_handed"], "coin": 90, "msrd_dc": 22, "restriction": "licensed" }
+      ],
+      "armor": [
+        { "tier": "light_low", "name": "가죽 재킷", "coin": 1.4, "msrd_dc": 10 },
+        { "tier": "light_high", "name": "방검 셔츠", "coin": 4, "msrd_dc": 13, "restriction": "licensed" },
+        { "tier": "medium_low", "name": "은닉형 방탄 조끼", "coin": 8, "msrd_dc": 15, "restriction": "licensed" },
+        { "tier": "medium_high", "name": "전술 조끼", "coin": 16, "msrd_dc": 17, "restriction": "licensed" },
+        { "tier": "heavy_high", "name": "진압용 풀세트", "coin": 32, "msrd_dc": 19, "restriction": "licensed" }
+      ],
+      "gear": { "cell_phone": 1, "penlight": 0.13, "first_aid_kit": 0.25, "lockpick_set": 1, "digital_camera": 5.7, "laptop": 45, "car_used": 256 },
+      "gear_source": "휴대폰 DC 9, 펜라이트 DC 3, 구급상자 DC 5, 자물쇠 따개 DC 9(허가), 디지털카메라 DC 14는 MSRD. 노트북은 MSRD DC 23(2002년 물가)을 2020년대에 맞춰 낮춘 값, 중고차는 우리 추정 (ours)",
+      "note": "한국을 닮은 섬(overtime-tower)이라면 총기는 전부 한 단계 위 제한(licensed→restricted)으로 본다 (ours)"
+    },
+    "futuristic": {
+      "weapons": [
+        { "name": "진동 칼날", "damage": "1d6 참격 (마법 +1 무기 취급, 희귀도 uncommon)", "props": ["light", "finesse"], "coin": 45, "source": "ours" },
+        { "name": "스턴 권총", "damage": "1d4 전격 + 건강 DC 15 실패 시 1d6라운드 마비", "range": "30/90", "coin": 4, "source": "ours (테이저 확장)" },
+        { "name": "에너지 권총", "damage": "2d8 광휘", "range": "40/120", "coin": 23, "source": "d20future 피해 + ours 가격", "restriction": "licensed" },
+        { "name": "에너지 소총", "damage": "3d8 광휘", "props": ["two_handed"], "range": "100/300", "coin": 64, "source": "d20future 피해 + ours 가격", "restriction": "restricted" },
+        { "name": "구식 화약 소총", "damage": "2d8 관통", "coin": 5.5, "note": "현대 돌격소총을 기술 한 단계 아래 가격(×0.5)으로" }
+      ],
+      "armor": [
+        { "tier": "light_high", "name": "경량 전투복", "coin": 11 },
+        { "tier": "medium_high", "name": "강화 방탄복", "coin": 45 },
+        { "tier": "heavy_high", "name": "동력 장갑 (근력 15)", "coin": 256, "restriction": "military" },
+        { "tier": "shield", "name": "휴대 역장", "coin": 23 }
+      ],
+      "gear": { "comm_implant": 11, "medkit_auto": 8, "oxygen_mask": 2, "data_spike": 4, "drone_small": 23 },
+      "note": "미래 가격은 MSRD 현대 DC에 +2~+4를 준 우리 조정값"
+    }
+  },
+
+  "magic_and_anomaly_items": {
+    "source": "srd52",
+    "rarity": [
+      { "id": "common", "ko": "흔함", "coin": 100 },
+      { "id": "uncommon", "ko": "고급", "coin": 400 },
+      { "id": "rare", "ko": "희귀", "coin": 4000 },
+      { "id": "very_rare", "ko": "매우 희귀", "coin": 40000 },
+      { "id": "legendary", "ko": "전설", "coin": 200000 },
+      { "id": "artifact", "ko": "유물", "coin": null, "note": "값을 매길 수 없음 — 우리 treasures가 여기에 해당" }
+    ],
+    "consumable": "소모품은 절반 (주문 두루마리 제외)",
+    "with_base_item": "무기·갑옷이 바탕이면 그 장비 값을 더한다",
+    "applies_to_kinds": "island.ts Kind의 magic·tech·anomaly 모두 같은 희귀도 값을 쓴다 (ours). 예: 미래 섬의 '재생 나노팩'은 흔함, 현대 섬의 '저주받은 사원증'은 고급"
+  },
+
+  "crafting": {
+    "source": "srd52",
+    "mundane": { "materials": "정가의 50%", "days": "정가 ÷ 10 (올림), 하루 8시간", "helpers": "숙련자 1명이 도우면 시간 절반" },
+    "healing_potion": { "materials": 25, "days": 1, "requires": "약초 도구 숙련 (현대: 의료 키트)" },
+    "magic": [
+      { "rarity": "common", "days": 5, "coin": 50 },
+      { "rarity": "uncommon", "days": 10, "coin": 200 },
+      { "rarity": "rare", "days": 50, "coin": 2000 },
+      { "rarity": "very_rare", "days": 125, "coin": 20000 },
+      { "rarity": "legendary", "days": 250, "coin": 100000 }
+    ],
+    "magic_consumable": "시간·비용 절반",
+    "odyssey_note": "섬 방문 한 번은 며칠이라 제작은 주로 항해(VOYAGE)의 장기 과제 시계로 처리한다 (narrative.json downtime)"
+  },
+
+  "acquire_asset_blades": {
+    "source": "blades",
+    "use": "가게에 없는 물건을 연줄·수소문으로 구할 때 (항해 중 정비 활동 또는 섬의 한 장면)",
+    "check": "설득·기만·기술 공학 등 방법에 맞는 판정, DC 15 (ours)",
+    "result_quality": [
+      { "result": "DC보다 5 이상 낮음", "quality": "원하는 것보다 한 단계 낮은 물건, 또는 조건 붙은 물건" },
+      { "result": "실패", "quality": "구했지만 대가 (값 ×1.5, 위기 시계 +1, 빚)" },
+      { "result": "성공", "quality": "원하는 물건" },
+      { "result": "5 이상 성공 / 자연 20", "quality": "한 단계 좋은 물건 또는 덤" }
+    ],
+    "pay_to_upgrade": "코인을 더 내면 결과 한 단계 상승 (Blades는 품질 +1당 2코인 — 우리는 정가의 50%)",
+    "restricted_heat": "제한·불법품이면 수배도(heat) +2 (Blades)"
+  },
+
+  "starting_money": {
+    "source": "srd52",
+    "level_1": "배경 50 + 원형 장비 대신 받는 돈 50~150 → 기본 100코인, 또는 원형 기본 장비 + 15코인 (ours: 원형별 차이는 두지 않음)",
+    "higher_level": [
+      { "levels": "2-4", "extra": "기본 장비", "magic": "흔함 1" },
+      { "levels": "5-10", "extra": "500 + 1d10×25", "magic": "흔함 1, 고급 1" },
+      { "levels": "11-12", "extra": "5000 + 1d10×250", "magic": "흔함 2, 고급 3, 희귀 1" }
+    ]
+  }
+}

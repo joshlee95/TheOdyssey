@@ -1,5 +1,6 @@
 // 섬 팩 한국어 문장의 AI 티 검사. 사용법: npm run lint:prose [-- 섬id]
 // 필드마다 따로 세고(짧은 필드끼리 합쳐 과대 집계하지 않도록), 섬 전체 합계를 낸다.
+import { existsSync } from "node:fs";
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { parse } from "yaml";
@@ -15,7 +16,7 @@ function* strings(node: unknown, at: string): Generator<[string, string]> {
 }
 
 let total = 0;
-for (const d of (await readdir(ROOT, { withFileTypes: true })).filter((d) => d.isDirectory() && !d.name.startsWith("_"))) {
+for (const d of (await readdir(ROOT, { withFileTypes: true })).filter((d) => d.isDirectory() && !d.name.startsWith("_") && existsSync(path.join(ROOT, d.name, "island.yaml")))) {
   if (only.length && !only.includes(d.name)) continue;
   const island = parse(await readFile(path.join(ROOT, d.name, "island.yaml"), "utf8"));
   let score = 0;

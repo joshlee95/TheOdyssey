@@ -1,5 +1,6 @@
 // 사용법: npm run validate            → islands/*/island.yaml 전부 검사
 //        npm run validate -- my-island → 특정 섬만 검사
+import { existsSync } from "node:fs";
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { parse } from "yaml";
@@ -11,7 +12,9 @@ const ISLANDS_DIR = path.resolve(import.meta.dirname, "../islands");
 async function main() {
   const only = process.argv.slice(2);
   const dirs = (await readdir(ISLANDS_DIR, { withFileTypes: true }))
-    .filter((d) => d.isDirectory() && (only.length === 0 || only.includes(d.name)))
+    // _archive(보관한 섬)와 아직 island.yaml이 없는 섬 공방 초안은 건너뛴다
+    .filter((d) => d.isDirectory() && d.name !== "_archive" && existsSync(path.join(ISLANDS_DIR, d.name, "island.yaml")))
+    .filter((d) => only.length === 0 || only.includes(d.name))
     .map((d) => d.name)
     .sort();
 

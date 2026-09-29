@@ -1,0 +1,289 @@
+{
+  "_meta": {
+    "title": "서사 구조 데이터 (GM 프롬프트에 넣을 수 있는 형태)",
+    "version": 1,
+    "sources": [
+      { "id": "blades", "name": "Blades in the Dark SRD", "url": "https://bladesinthedark.com/", "license": "CC BY 3.0" },
+      { "id": "dw", "name": "Dungeon World SRD", "url": "https://github.com/Sagelt/Dungeon-World", "license": "CC BY 3.0" },
+      { "id": "ironsworn", "name": "Ironsworn SRD / Starforged Reference Guide", "url": "https://tomkinpress.com/pages/licensing", "license": "CC BY 4.0" },
+      { "id": "fate", "name": "Fate Condensed SRD", "url": "https://fate-srd.com/fate-condensed", "license": "CC BY 3.0" },
+      { "id": "gumshoe", "name": "GUMSHOE SRD", "url": "https://pelgranepress.com/gumshoe/files/GUMSHOE%20SRD%20CC%20version.pdf", "license": "CC BY 3.0" },
+      { "id": "lgmrd", "name": "Lazy GM's Resource Document", "url": "https://slyflourish.com/lazy_gm_resource_document.html", "license": "CC BY 4.0" },
+      { "id": "alexandrian", "name": "The Alexandrian — Three Clue Rule, Node-Based Scenario Design (Justin Alexander)", "url": "https://thealexandrian.net/wordpress/1118/roleplaying-games/three-clue-rule", "license": "저작권 있음 — 기법(아이디어)만 우리 말로 정리" },
+      { "id": "5rd", "name": "5 Room Dungeon (Johnn Four, Roleplaying Tips)", "url": "https://www.roleplayingtips.com/5-room-dungeons/", "license": "저작권 있음 — 기법만 정리" }
+    ],
+    "note": "모든 설명은 우리 말로 새로 썼다. source가 'ours'인 값은 d20 판정에 맞추려고 우리가 정한 변환이다."
+  },
+
+  "clocks": {
+    "source": "blades",
+    "what": "원 모양 칸 시계. 진행·위협·시간 제한을 눈에 보이게 만든다. 서버가 칸을 들고 있고 GM은 tick_clock 도구로만 바꾼다",
+    "sizes": [
+      { "segments": 4, "ko": "복잡함", "use": "한 장면 안에서 끝날 장애물 (문 따기, 경비 따돌리기)" },
+      { "segments": 6, "ko": "까다로움", "use": "여러 행동이 필요한 장애물, 섬 위기 시계 기본값" },
+      { "segments": 8, "ko": "벅참", "use": "섬 전체 목표, 강한 적 세력의 계획" },
+      { "segments": 10, "ko": "장기 과제", "use": "항해 여러 번에 걸친 제작·연구·복수 (Blades는 8칸 이상 또는 시계 여러 개)", "range": [10, 12] }
+    ],
+    "types": [
+      { "id": "danger", "ko": "위험 시계", "rule": "실패·대가가 나올 때 1~3칸. 다 차면 나쁜 일이 벌어진다", "maps_to": "island.world.clock" },
+      { "id": "progress", "ko": "진행 시계", "rule": "성공할 때마다 효과만큼 칸을 채운다. 다 차면 목표 달성" },
+      { "id": "racing", "ko": "경주 시계", "rule": "진행 시계와 위험 시계를 나란히 두고 먼저 차는 쪽이 이긴다 (탈출 vs 추격, 해킹 vs 역추적)" },
+      { "id": "linked", "ko": "연결 시계", "rule": "앞 시계가 차야 다음 시계가 열린다 (1막→2막 전환)" },
+      { "id": "tug_of_war", "ko": "줄다리기 시계", "rule": "양쪽 행동에 따라 차기도 비기도 한다 (여론, 전황)" },
+      { "id": "faction", "ko": "세력 시계", "rule": "선원이 없는 사이에도 세력의 계획이 진행된다. 장면 전환·항해 때 서버가 굴려 1칸 (ours: d20 11 이상이면 +1)" },
+      { "id": "project", "ko": "장기 과제 시계", "rule": "항해 정비 활동으로 채운다 (downtime 참조)" }
+    ],
+    "ticks_by_effect": { "zero": 0, "limited": 1, "standard": 2, "great": 3, "extreme": 5 },
+    "consequence_ticks": { "minor": 1, "standard": 2, "severe": 3 },
+    "d20_to_effect": {
+      "source": "ours",
+      "rule": [
+        { "when": "실패", "effect": "zero", "plus": "위험 시계에 position에 맞는 칸" },
+        { "when": "대가 있는 성공 (DC에 1~4 모자람, GM이 대가를 제안하고 선원이 수락)", "effect": "limited" },
+        { "when": "성공", "effect": "standard" },
+        { "when": "DC를 10 이상 넘거나 자연 20", "effect": "great" }
+      ],
+      "effect_factors": [
+        { "id": "quality", "ko": "도구·기술 격차", "rule": "섬보다 기술 수준이 높은 도구가 crossover=works면 +1단계, weakened면 0, fails면 도구 없이 처리 (Blades의 품질·Tier를 우리 tech 수준으로 바꿈)" },
+        { "id": "scale", "ko": "규모", "rule": "혼자서 무리·조직·거대 존재를 상대하면 -1단계" },
+        { "id": "potency", "ko": "약점·강점", "rule": "알아낸 약점(비밀 공개)을 찌르면 +1단계, 초자연적 방어가 있으면 -1단계" }
+      ]
+    },
+    "display": "선원에게는 이름과 칸 수만 보인다. 섬 비밀과 연결된 시계는 hidden으로 두고 GM만 본다 (ours)"
+  },
+
+  "position": {
+    "source": "blades",
+    "note": "d20 판정 앞에 GM이 '실패하면 무엇을 잃는가'를 정하는 틀. DC와 별개다 (ours: roll 도구에 position 인자 추가)",
+    "levels": [
+      { "id": "controlled", "ko": "안정", "on_fail": "주춤한다 — 다시 시도하거나 방법을 바꾸거나, 가벼운 대가 (위험 시계 1칸)", "on_cost": "망설임·작은 손해" },
+      { "id": "risky", "ko": "위험 (기본)", "on_fail": "피해(무기 피해 그대로), 상태 이상, 위험 시계 2칸 중 하나", "on_cost": "성공하되 대가 하나" },
+      { "id": "desperate", "ko": "절박", "on_fail": "최악의 결과 — 큰 피해(피해 주사위 2배), 오래가는 상태, 위험 시계 3칸, 결정적 기회 상실", "on_cost": "성공하되 큰 대가", "reward": "절박한 상황에 뛰어든 선원에게 영감 1 (Blades는 절박 판정에 경험치)" }
+    ],
+    "devils_bargain": {
+      "source": "blades",
+      "rule": "GM이나 다른 선원이 '대가'를 제안하고 선원이 받아들이면 판정에 이점. 대가는 판정 결과와 상관없이 무조건 일어난다",
+      "examples": ["주변이 부서진다", "돈을 잃는다", "NPC 하나가 등을 돌린다 (호감도 -15)", "위험 시계 +1", "수배도 +2", "비밀 행동의 흔적이 남는다"]
+    },
+    "consequence_types": [
+      { "id": "reduced_effect", "ko": "효과 감소", "tool": "tick_clock (칸 줄임)" },
+      { "id": "complication", "ko": "복잡한 일", "tool": "tick_clock (위험 시계 1~3) 또는 start_event" },
+      { "id": "lost_opportunity", "ko": "기회 상실", "tool": "서술 — 같은 방법으로는 다시 못 한다" },
+      { "id": "worse_position", "ko": "처지 악화", "tool": "다음 판정 position 한 단계 위" },
+      { "id": "harm", "ko": "피해", "tool": "apply_damage / apply_condition" }
+    ]
+  },
+
+  "gm_agenda_dw": [
+    { "id": "portray_world", "ko": "그 섬의 세계를 생생하게 그린다 — 섬의 reality 규칙과 말투를 지킨다" },
+    { "id": "fill_with_adventure", "ko": "선원들의 삶을 모험으로 채운다" },
+    { "id": "play_to_find_out", "ko": "결말을 정해 두지 않고, 무슨 일이 일어나는지 보려고 진행한다" }
+  ],
+  "gm_principles_dw": [
+    "지도를 그리되 빈칸을 남긴다 — 섬 팩에 없는 곳은 선원에게 묻는다",
+    "플레이어가 아니라 캐릭터에게 말을 건다",
+    "그 섬만의 기이함을 받아들인다",
+    "이야기에서 자연스럽게 따라 나오는 수를 둔다",
+    "내가 지금 무슨 '수'를 쓰는지 이름을 말하지 않는다",
+    "모든 적에게 욕망과 생명력을 준다",
+    "등장하는 사람마다 이름을 붙인다",
+    "질문하고, 그 대답을 이야기에 쓴다",
+    "선원들의 팬이 된다",
+    "위험하게 생각한다 — 섬의 모든 것은 무언가를 원한다",
+    "이야기로 시작해 이야기로 끝낸다 — 판정 전후에 반드시 서술",
+    "화면 밖에서도 세상은 움직인다 — 세력 시계를 돌린다"
+  ],
+
+  "gm_moves": {
+    "source": "dw",
+    "when": {
+      "soft": "선원들이 GM을 쳐다볼 때, 또는 판정이 대가 있는 성공일 때 → 곧 닥칠 일을 보여 주고 반응할 틈을 준다",
+      "hard": "판정 실패, 또는 soft 수에 반응하지 않았을 때 → 되돌릴 수 없는 결과를 바로 적용한다 (도구 호출)",
+      "rule": "같은 수라도 경고만 하면 soft, 즉시 적용하면 hard"
+    },
+    "list": [
+      { "id": "use_danger_move", "ko": "적·위험·장소 고유의 수를 쓴다", "hard_tool": "attack / start_event" },
+      { "id": "reveal_unwelcome_truth", "ko": "반갑지 않은 진실을 드러낸다", "hard_tool": "reveal_island_secret" },
+      { "id": "show_signs", "ko": "다가오는 위협의 조짐을 보인다", "soft_only": true, "tool": "위험 시계를 보여 주거나 서술" },
+      { "id": "deal_damage", "ko": "피해를 준다", "hard_tool": "apply_damage" },
+      { "id": "use_up_resources", "ko": "자원을 소모시킨다 (탄약, 돈, 영감, 유물 충전)", "hard_tool": "update_character" },
+      { "id": "turn_move_back", "ko": "선원의 행동을 역으로 돌린다", "hard_tool": "서술 + apply_condition" },
+      { "id": "separate", "ko": "선원들을 갈라놓는다", "hard_tool": "move_party (일부만) / whisper" },
+      { "id": "give_opportunity_fits_role", "ko": "누군가의 원형·배경에 딱 맞는 기회를 준다", "soft_only": true },
+      { "id": "show_downside", "ko": "원형·출신·장비의 약점을 보여 준다 (crossover 실패가 대표적)", "hard_tool": "apply_condition" },
+      { "id": "offer_opportunity", "ko": "대가가 있든 없든 기회를 제안한다 (악마의 거래 포함)", "soft_only": true },
+      { "id": "put_in_spot", "ko": "누군가를 곤란한 처지에 몰아넣는다", "hard_tool": "position=desperate" },
+      { "id": "tell_requirements", "ko": "조건이나 대가를 알려 주고 할지 묻는다", "soft_only": true },
+      { "id": "tick_clock", "ko": "위험 시계를 진행한다 (Blades)", "hard_tool": "tick_clock", "source": "blades" },
+      { "id": "npc_reacts", "ko": "NPC가 호감도에 따라 움직인다 (소문 포함)", "hard_tool": "set_affinity", "source": "ours" },
+      { "id": "expose_secret_action", "ko": "선원의 비밀 행동이 들킨다", "hard_tool": "expose_hidden_action", "source": "ours" }
+    ]
+  },
+
+  "fronts_dw": {
+    "source": "dw",
+    "what": "섬의 위협을 정리하는 틀. 섬 팩 필드에 그대로 대응한다",
+    "parts": [
+      { "id": "danger", "ko": "위협", "maps_to": "악역 NPC 또는 세력 (npcs, events)" },
+      { "id": "impulse", "ko": "충동", "maps_to": "npcs[].wants" },
+      { "id": "grim_portents", "ko": "불길한 징조 (순서대로 벌어질 일 3~5개)", "maps_to": "events[kind=clock] — 위기 시계 칸마다 하나" },
+      { "id": "impending_doom", "ko": "다가오는 파국", "maps_to": "events[kind=finale]" },
+      { "id": "stakes", "ko": "걸린 질문 (예: '등대지기는 이름을 되찾는가?')", "maps_to": "story.theme, exits" },
+      { "id": "cast", "ko": "등장인물", "maps_to": "npcs" }
+    ]
+  },
+
+  "scene_framing": [
+    { "id": "strong_start", "ko": "강한 시작", "source": "lgmrd", "how": "상륙 첫 장면은 이미 무언가 벌어지는 중이다 — 싸움, 사고, 수상한 부탁. 설명은 행동 뒤로 미룬다", "maps_to": "events[kind=arrival]" },
+    { "id": "late_in_early_out", "ko": "늦게 들어가 일찍 나온다", "source": "일반 작법", "how": "지루한 준비 과정은 건너뛰고 결정의 순간에 장면을 연다. 결론이 나면 바로 끊는다" },
+    { "id": "frame_with_question", "ko": "질문으로 장면을 연다", "source": "dw", "how": "'문 너머에서 누구 목소리가 들렸지?'처럼 선원에게 묻고 대답을 사실로 삼는다 (섬 비밀과 모순되지 않는 범위)" },
+    { "id": "spotlight", "ko": "조명 돌리기", "source": "일반 기법", "how": "라운드마다 가장 오래 조용했던 선원의 캐릭터에게 먼저 말을 건다 (서버가 발화량 집계, ours)" },
+    { "id": "pace_cycle", "ko": "긴장과 휴식의 교대", "source": "lgmrd", "how": "격한 장면 뒤에는 대화·휴식·감정 장면을 둔다. 섬 하나 60~90분 기준 장면 1~2개/시간" },
+    { "id": "cut_to_consequence", "ko": "결과로 바로 넘기기", "source": "일반 기법", "how": "여행·탐색이 길어지면 몽타주 한 문단으로 요약하고 판정 하나로 대가를 정한다" },
+    { "id": "end_with_hook", "ko": "고리를 걸고 끝내기", "source": "일반 작법", "how": "장면 끝에는 새 질문이나 위협의 조짐 하나를 남긴다 (soft move)" }
+  ],
+
+  "clue_design": {
+    "three_clue_rule": {
+      "source": "alexandrian",
+      "rule": "선원이 알아내야 하는 결론 하나마다 단서를 최소 3개, 서로 다른 경로(장소·NPC·사건)에 둔다",
+      "corollaries": [
+        "허용적 단서 찾기: 선원이 그럴듯한 방법을 떠올리면 준비하지 않은 경로라도 단서를 준다",
+        "능동적 단서: 막히면 단서가 선원을 찾아오게 한다 (습격, 새 희생자, 누군가 문을 두드림)",
+        "헛다리는 따로 만들 필요 없다 — 선원들이 알아서 만든다",
+        "결론 목록을 만들고 발견한 단서를 체크하며 막힘을 미리 본다"
+      ],
+      "lint": "island.ts 검증기 제안: secrets[].hints가 3개 미만이면 경고, 힌트를 아는 NPC·장소가 2곳 미만이면 경고 (ours)"
+    },
+    "core_clues": {
+      "source": "gumshoe",
+      "rule": "다음 장면으로 가는 데 꼭 필요한 '핵심 단서'는 알맞은 방법으로 찾으면 판정 없이 준다. 판정은 추가 정보·시간·대가만 가른다",
+      "why": "주사위 한 번 실패로 섬 전체가 막히는 것을 막는다. LLM GM이 '실패했으니 아무것도 없다'고 말하는 버릇을 고친다",
+      "floating_core_clue": "특정 장소에 묶지 않은 핵심 단서를 두고, 시간 배분을 보며 가장 알맞은 장면에서 준다"
+    },
+    "node_based": {
+      "source": "alexandrian",
+      "principle": "줄거리가 아니라 상황을 준비한다. 장소·인물·조직·사건을 '노드'로 두고 단서로 잇는다",
+      "inverted_three_clue_rule": "노드 하나에서 다른 노드로 가는 단서를 3개 두면, 선원은 적어도 하나는 따라간다",
+      "structures": [
+        { "id": "loop", "ko": "고리", "how": "노드 여럿이 서로를 가리킨다. 어디서 들어와도 전부 돌 수 있다", "fits": "탐사형 섬 (mist-lantern, rain-city)" },
+        { "id": "funnel", "ko": "깔때기", "how": "여러 노드가 한 노드로 모인 뒤 다음 묶음으로 넘어간다. 막 전환에 쓴다", "fits": "story.acts의 turn" },
+        { "id": "layer_cake", "ko": "층층 케이크", "how": "같은 층 노드끼리 단서를 주고, 층마다 다음 층으로 가는 단서를 1개씩 넣어 층 전체로는 3개가 되게 한다", "fits": "3막 구조 섬" },
+        { "id": "proactive_node", "ko": "능동 노드", "how": "선원이 찾아가지 않아도 찾아오는 노드 (습격대, 전령, 소문)", "fits": "events[kind=random|clock]" }
+      ],
+      "maps_to": "locations.connects_to = 이동 그래프, npcs.knows + secrets.hints = 단서 그래프"
+    }
+  },
+
+  "prep_checklist_lgmrd": {
+    "source": "lgmrd",
+    "steps": [
+      { "id": "review_characters", "ko": "선원 확인", "island_field": "(런타임) 선원 카드·배경 영감 조건", "tool": "GM 프롬프트 messages[0]" },
+      { "id": "strong_start", "ko": "강한 시작", "island_field": "public.arrival, events[kind=arrival]" },
+      { "id": "potential_scenes", "ko": "가능한 장면 3~5개 (1시간에 1~2개)", "island_field": "story.acts[].beats" },
+      { "id": "secrets_and_clues", "ko": "비밀과 단서 10개 — 한 문장씩, 어디서 발견될지는 정하지 않음", "island_field": "secrets[]" },
+      { "id": "fantastic_locations", "ko": "환상적인 장소 3~5곳, 곳마다 감각적 특징 3개", "island_field": "locations[].description / tags" },
+      { "id": "important_npcs", "ko": "중요 NPC — 이름, 사건과의 연결, 익숙한 인물상 하나", "island_field": "npcs[]" },
+      { "id": "monsters", "ko": "장소와 이야기에 맞는 적", "island_field": "(제안) encounters[] — combat.json의 reskin 목록 참조" },
+      { "id": "rewards", "ko": "선원의 욕망에 맞는 보상", "island_field": "treasures[], blessings[]" }
+    ],
+    "minimum_set": ["strong_start", "secrets_and_clues", "fantastic_locations"]
+  },
+
+  "five_room_structure": {
+    "source": "5rd",
+    "rooms": [
+      { "n": 1, "ko": "입구와 문지기", "purpose": "왜 아직 아무도 비밀을 못 캤는지 보여 주는 첫 장애물", "maps_to": "1막 trial" },
+      { "n": 2, "ko": "퍼즐 또는 대화 도전", "purpose": "힘이 아닌 머리·말로 넘는 관문", "maps_to": "1~2막 trial" },
+      { "n": 3, "ko": "함정 또는 좌절", "purpose": "긴장을 올리고 자원을 깎는 반전", "maps_to": "2막 turn" },
+      { "n": 4, "ko": "절정", "purpose": "최종 대결·결단", "maps_to": "events[kind=finale]" },
+      { "n": 5, "ko": "보상과 반전", "purpose": "보상, 그리고 이야기를 뒤집거나 다음 섬으로 잇는 발견", "maps_to": "exits, treasures" }
+    ]
+  },
+
+  "quest_templates_lgmrd": [
+    { "id": "kill_boss", "ko": "우두머리 제거" },
+    { "id": "find_something", "ko": "무언가 찾기(되돌려 놓기)" },
+    { "id": "rescue", "ko": "구출·호위" },
+    { "id": "kill_lieutenants", "ko": "부하들부터 제거" },
+    { "id": "destroy_something", "ko": "무언가 파괴" },
+    { "id": "steal_something", "ko": "훔치기(하이스트)" },
+    { "id": "clear_dangers", "ko": "위험 일소" },
+    { "id": "collect_keys", "ko": "열쇠 모으기 (5개 중 3개처럼 과반)", "note": "섬들을 잇는 캠페인 구조로도 쓸 수 있다" },
+    { "id": "defend", "ko": "거점 방어" },
+    { "id": "end_ritual", "ko": "의식 저지 (구성 요소 여럿 파괴)" }
+  ],
+
+  "oracle_ironsworn": {
+    "source": "ironsworn",
+    "why": "LLM은 무작위성이 약하고 선원에게 유리한 쪽으로 쏠린다. 섬 팩에 답이 없는 예/아니오 질문은 서버가 굴린다 (ask_oracle 도구)",
+    "odds": [
+      { "id": "almost_certain", "ko": "거의 확실", "yes_if_d100_at_least": 11 },
+      { "id": "likely", "ko": "그럴 법함", "yes_if_d100_at_least": 26 },
+      { "id": "fifty_fifty", "ko": "반반", "yes_if_d100_at_least": 51 },
+      { "id": "unlikely", "ko": "그럴 것 같지 않음", "yes_if_d100_at_least": 76 },
+      { "id": "small_chance", "ko": "희박", "yes_if_d100_at_least": 91 }
+    ],
+    "match": "두 자리 숫자가 같으면(11, 22, …) 극단적인 결과나 반전",
+    "inspiration_tables": "Starforged/Ironsworn의 행동·주제 표는 CC BY 4.0 — dataforged JSON(CC BY 4.0 데이터, MIT 코드)을 런타임에 불러 쓰고 출처 표기"
+  },
+
+  "vows_and_progress": {
+    "source": "ironsworn",
+    "track": { "boxes": 10, "ticks_per_box": 4 },
+    "ranks": [
+      { "id": "troublesome", "ko": "성가심", "mark": "3칸(12틱)", "xp": 1 },
+      { "id": "dangerous", "ko": "위험함", "mark": "2칸(8틱)", "xp": 2 },
+      { "id": "formidable", "ko": "만만찮음", "mark": "1칸(4틱)", "xp": 3 },
+      { "id": "extreme", "ko": "극한", "mark": "2틱", "xp": 4 },
+      { "id": "epic", "ko": "서사급", "mark": "1틱", "xp": 5 }
+    ],
+    "progress_roll": "채운 칸 수(0~10)를 d10 두 개와 비교. 둘 다 넘으면 완전한 성공, 하나만 넘으면 대가 있는 성공, 둘 다 못 넘으면 실패. 같으면 주사위가 이긴다",
+    "use": {
+      "campaign_vow": "캠페인 시작 때 선원 각자 '이 항해에서 이루려는 것' 하나를 서사급(epic)으로 맹세. 섬마다 관련 진전이 있으면 1틱 → 피날레에서 진행 굴림 (ours)",
+      "island_vow": "섬 hook에 휘말릴 때 파티 공동 맹세 하나 (위험함/만만찮음). story.acts의 막 전환마다 표시",
+      "breaking": "맹세를 버리면 영감 0, 배경 영감 조건 한 장면 동안 무효 (ours)"
+    }
+  },
+
+  "aspects_fate": {
+    "source": "fate",
+    "why": "멀티버스에서 '이 세계에서만 참인 사실'을 짧은 문장으로 다루기 좋다. 주사위 체계는 가져오지 않고 개념만 쓴다",
+    "situation_aspect": "장면에 붙은 사실 한 줄 ('기름 번진 바닥', '정전된 층'). GM은 set_scene_aspect로 등록하고, 선원이 이를 활용하면 이점 (ours)",
+    "compel": "선원 캐릭터의 약점·사연(배경, 원형 서명, 출신 특성)을 근거로 GM이 곤란한 전개를 제안한다. 받아들이면 영감 1, 거절하려면 영감 1을 낸다. 영감이 0이면 거절할 수 없다",
+    "invoke": "영감 1을 써서 재굴림 (rules.ts의 영감 규칙 그대로)",
+    "refresh": "섬에 상륙할 때 파티 영감을 최소 2로 채운다 (ours, MAX_INSPIRATION 4)"
+  },
+
+  "downtime_voyage": {
+    "source": "blades (활동 구성) + lgmrd (항해 역할) + ours (d20 변환)",
+    "activities_per_crew": 2,
+    "extra_activity_cost_coin": 10,
+    "activities": [
+      { "id": "recover", "ko": "회복", "effect": "장기 상태·영구 상처용 4칸 치료 시계 진행. 치료사 원형이 돌보면 이점" },
+      { "id": "train", "ko": "수련", "effect": "경험치 +1 (항해당 1회)" },
+      { "id": "acquire", "ko": "조달", "effect": "economy.json acquire_asset_blades" },
+      { "id": "project", "ko": "장기 과제", "effect": "project 시계 진행 (제작, 연구, 유물 해독)" },
+      { "id": "indulge", "ko": "기항지 유흥", "effect": "탈진 1단계 회복 + 배경 영감 조건 충족 서술. 과하면 사고 (ours: 자연 1)" },
+      { "id": "lay_low", "ko": "잠적", "effect": "수배도(heat) 감소" }
+    ],
+    "result_ticks": { "source": "ours", "table": [{ "total_lt": 10, "ticks": 1 }, { "total_lt": 15, "ticks": 2 }, { "total_lt": 20, "ticks": 3 }, { "total_gte": 20, "ticks": 5 }], "note": "Blades의 1-3/4-5/6/치명타 → 1/2/3/5칸을 d20 총합으로 바꿈" },
+    "voyage_roles_lgmrd": [
+      { "id": "navigator", "ko": "항해사", "skills": ["survival", "nature", "technology"], "fail": "항로 이탈 — 항해 사건 1개 추가 또는 탈진" },
+      { "id": "lookout", "ko": "망꾼", "skills": ["perception", "insight", "investigation"], "fail": "기습 — 항해 사건 전투에서 선원이 기습당함" },
+      { "id": "quartermaster", "ko": "보급관", "skills": ["medicine", "survival"], "fail": "보급 손실 — 코인 또는 소모품 감소" }
+    ],
+    "voyage_dc": 12
+  },
+
+  "heat_blades": {
+    "source": "blades",
+    "optional": true,
+    "fits": ["neon-harbor", "rain-city", "moonlit-palace", "dustwind-gulch"],
+    "gain_per_job": { "quiet": 0, "contained": 2, "loud": 4, "wild": 6 },
+    "modifiers": { "high_profile_target": 1, "hostile_turf": 1, "at_war": 1, "killing": 2 },
+    "track": 9,
+    "overflow": "9칸이 차면 수배 등급 +1, 남는 칸은 이월. 수배 등급이 높을수록 섬의 추적자가 강해진다",
+    "odyssey_scope": "섬 단위로만 유지하고 섬을 떠나면 0 (ours). 단, 비밀 행동처럼 캠페인 단위 원한은 호감도로 남는다"
+  }
+}

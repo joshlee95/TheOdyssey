@@ -5,21 +5,14 @@ node_modules/
 # 템플릿과 테스트용 섬만 추적한다.
 islands/*
 !islands/_template/
+!islands/_archive/
 !islands/mist-lantern/
 !islands/overtime-tower/
-!islands/neon-harbor/
-!islands/dustwind-gulch/
-!islands/flesh-abbey/
-!islands/moonlit-palace/
-!islands/rust-ark/
-!islands/candy-republic/
-!islands/rain-city/
-!islands/cloud-sword-peak/
 islands/**/island.prev.yaml
 islands/**/review.md
 
 # 서버 설정 (API 키)
-data/
+/data/
 
 # 로컬 전용
 .DS_Store
